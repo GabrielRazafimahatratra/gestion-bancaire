@@ -26,3 +26,13 @@ model Caissier {
   password            String
   telephoneCaissier   String
 }
+
+model Pret {
+  numeroPret    String  @id
+  numeroCompte  String
+  montantPret   Decimal
+  tauxPret      Decimal
+  delaiPret     DateTime
+  datePret      DateTime
+  montantRendu  Decimal
+}
