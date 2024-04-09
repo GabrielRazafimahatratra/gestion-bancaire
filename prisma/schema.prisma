@@ -29,13 +29,12 @@ model Caissier {
 }
 
 model Pret {
-  numeroPret    String  @id
-  numeroCompte  String
-  montantPret   Decimal
-  tauxPret      Decimal
-  delaiPret     DateTime
-  datePret      DateTime
-  montantRendu  Decimal
-  emprunteur    Client  @relation(fields: [emprunteurId], references: [numeroCompte])
-  emprunteurId  String
+  numeroPret                String  @id
+  montantPret               Decimal
+  tauxPret                  Decimal
+  delaiPret                 DateTime
+  datePret                  DateTime
+  montantARendre            Decimal
+  emprunteur                Client  @relation(fields: [numeroCompteEmprunteur], references: [numeroCompte])
+  numeroCompteEmprunteur    String
 }
