@@ -1,14 +1,13 @@
 import { IsString } from "class-validator"
 
 export class UpdateCaissierDto {
+    
     @IsString()
     numeroCaissier: string
     @IsString()  
     nomCaissier: string
     @IsString()
     prenomsCaissier: string
-    @IsString()
-    numeroCaisse: string
     @IsString()
     emailCaissier: string
     @IsString()

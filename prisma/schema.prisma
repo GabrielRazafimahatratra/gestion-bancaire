@@ -16,8 +16,9 @@ model Client {
   telephoneClient    String
   montantClient      Float
 }
+
 model Caissier {
-  numeroCaissier      String    @id
+  numeroCaissier      String  @id
   nomCaissier         String
   prenomsCaissier     String
   numeroCaisse        String

@@ -1,18 +1,19 @@
 import { IsString } from "class-validator"
 
 export class CreateCaissierDto {
+    
     @IsString()
-    numeroCaissier: string
+    numeroCaissier: string;
     @IsString()  
-    nomCaissier: string
+    nomCaissier: string;
     @IsString()
-    prenomsCaissier: string
+    prenomsCaissier: string;
     @IsString()
-    numeroCaisse: string
+    numeroCaisse: string;
     @IsString()
-    emailCaissier: string
+    emailCaissier: string;
     @IsString()
-    password: string
+    password: string;
     @IsString()
     telephoneCaissier: string
 }
