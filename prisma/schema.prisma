@@ -15,6 +15,7 @@ model Client {
   emailClient        String
   telephoneClient    String
   montantClient      Float
+  prets              Pret[]
 }
 
 model Caissier {
@@ -35,4 +36,6 @@ model Pret {
   delaiPret     DateTime
   datePret      DateTime
   montantRendu  Decimal
+  emprunteur    Client  @relation(fields: [emprunteurId], references: [numeroCompte])
+  emprunteurId  String
 }
