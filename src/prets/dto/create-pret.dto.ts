@@ -18,11 +18,10 @@ export class CreatePretDto{
     @IsNotEmpty()
     delaiPret: number;
 
-    @IsString()
-    @IsNotEmpty()
-    montantARendre: Decimal;
-
+    
     @IsString()
     @IsNotEmpty()
     numeroCompteEmprunteur: string;
+
+
 }

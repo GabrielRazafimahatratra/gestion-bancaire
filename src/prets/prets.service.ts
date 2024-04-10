@@ -8,9 +8,19 @@ export class PretsService {
     constructor(private readonly prisma: PrismaService) {}
 
     async createLoan(createLoan : CreatePretDto) {
+
+        const tauxPret = parseFloat(createLoan.tauxPret.toString());
+        const montantPret = parseFloat(createLoan.montantPret.toString());
+
+         const calculMontantARendre = tauxPret * montantPret;
+
         const loan = await this.prisma.pret.create({
-            data: createLoan
-        })
+            data: {
+                ...createLoan,
+                montantARendre: calculMontantARendre
+            }
+                
+        });
 
         const loanTypeToJSON = JSON.stringify(loan);
 
