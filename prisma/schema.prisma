@@ -11,8 +11,8 @@ model Client {
   numeroCompte       String   @id
   nomClient          String
   prenomsClient      String
-  addresseClient     String
-  emailClient        String
+  addresseClient     String   
+  emailClient        String   @unique
   telephoneClient    String
   montantClient      Float
   prets              Pret[]
@@ -23,18 +23,20 @@ model Caissier {
   nomCaissier         String
   prenomsCaissier     String
   numeroCaisse        String
-  emailCaissier       String
+  emailCaissier       String  @unique
   password            String
   telephoneCaissier   String
 }
 
 model Pret {
-  numeroPret                String  @id
+  numeroPret                String    @id
   montantPret               Decimal
   tauxPret                  Decimal
-  delaiPret                 DateTime
-  datePret                  DateTime
+  delaiPret                 Int
+  datePret                  DateTime  @default(now()) @db.Date  
   montantARendre            Decimal
-  emprunteur                Client  @relation(fields: [numeroCompteEmprunteur], references: [numeroCompte])
+  emprunteur                Client    @relation(fields: [numeroCompteEmprunteur], references: [numeroCompte])
   numeroCompteEmprunteur    String
 }
+
+
