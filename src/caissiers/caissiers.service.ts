@@ -5,7 +5,7 @@ import { UpdateCaissierDto } from './dto/update-caissier.dto';
 
 @Injectable()
 export class CaissiersService {
-    constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async createCashiers(createCashier: CreateCaissierDto) {
     const cashier = await this.prisma.caissier.create({
