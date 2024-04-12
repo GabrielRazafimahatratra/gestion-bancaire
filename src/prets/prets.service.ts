@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreatePretDto } from './dto/create-pret.dto';
 import { UpdatePretDto } from './dto/update-pret.dto';
+import { Decimal } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class PretsService {
@@ -57,4 +58,39 @@ export class PretsService {
 
         return loanToDeleteTypeToJSON;
     }
+
+    // async rendrePret(numeroPret: string, montantAPayer: Decimal,  updateLoan: UpdatePretDto) {
+
+    //     console.log(montantAPayer);
+        
+    //     const montantPretAPayer = parseFloat(montantAPayer.toString())
+    //     console.log(montantPretAPayer);
+    //     const montantARendreData = await this.prisma.pret.findUnique({
+    //         where: {numeroPret},
+    //         select: {montantARendre:true}
+    //     });
+
+    //     const valeurMontantPretARendre = montantARendreData.montantARendre;
+    //     const valeurMontantConverti = parseFloat(valeurMontantPretARendre.toString())
+    //     console.log(valeurMontantPretARendre)
+        
+    //     const montantReste = valeurMontantConverti - montantPretAPayer;
+
+    //     const nouveauPret = await this.prisma.pret.update({
+    //         where: {numeroPret},
+    //         data: {
+    //             ...updateLoan,
+    //             montantARendre: montantReste
+    //         }
+    //     });
+
+    //     const nouveauPretTypeToJSON = JSON.stringify(nouveauPret)
+
+    //     return nouveauPretTypeToJSON;
+    // }
+
+    // async montantTotalNonPaye() {}
+
+    // async montantTotalPaye() {}
+
 }

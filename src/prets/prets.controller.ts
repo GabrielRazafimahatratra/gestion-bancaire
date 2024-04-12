@@ -2,10 +2,16 @@ import { Controller, Delete, Param, Patch, Post, Get, Body } from '@nestjs/commo
 import { PretsService } from './prets.service';
 import { CreatePretDto } from './dto/create-pret.dto';
 import { UpdatePretDto } from './dto/update-pret.dto';
+import { Decimal } from '@prisma/client/runtime/library';
 
 @Controller('prets')
 export class PretsController {
     constructor(private readonly pretsService: PretsService) {}
+
+    @Patch('/rendrePret/:id')
+    rendrePret(@Param('id') numeroPret: string, @Body() montantApayer: Decimal, updateLoan: UpdatePretDto) {
+        return this.pretsService.rendrePret(numeroPret, montantApayer, updateLoan)
+    }
 
     @Post()
     createLoan(@Body() createLoan: CreatePretDto) {
