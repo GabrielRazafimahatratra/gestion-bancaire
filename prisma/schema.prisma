@@ -15,7 +15,9 @@ model Client {
   emailClient     String @unique
   telephoneClient String
   montantClient   Float
+
   prets           Pret[]
+  remboursements  RemboursementPret[]
 }
 
 model Caissier {
@@ -40,7 +42,8 @@ model Pret {
   emprunteur             Client   @relation(fields: [numeroCompteEmprunteur], references: [numeroCompte])
   numeroCompteEmprunteur String
 
-  remboursementPret      RemboursementPret?
+  remboursements          RemboursementPret[]
+
 }
 
 
@@ -59,7 +62,11 @@ model RemboursementPret {
   numeroCompteDeLaBanque    String
 
 
-  pret                      Pret    @relation(fields: [idRemboursement], references: [numeroPret])
   remboursementPret         Banque  @relation(fields: [numeroCompteDeLaBanque], references: [numeroCompteBanque])
 
+  rembourseur               Client  @relation(fields: [numeroCompte], references: [numeroCompte])
+  numeroCompte              String
+
+  rembourserPret             Pret    @relation(fields: [numeroPret], references: [numeroPret])
+  numeroPret                String
 }

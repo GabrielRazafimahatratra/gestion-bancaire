@@ -59,38 +59,38 @@ export class PretsService {
         return loanToDeleteTypeToJSON;
     }
 
-    async rendrePret(numeroPret: string, montantAPayer: Decimal,  updateLoan: UpdatePretDto) {
+    // async rendrePret(numeroPret: string, montantAPayer: Decimal,  updateLoan: UpdatePretDto) {
 
-        console.log(montantAPayer);
+    //     console.log(montantAPayer);
         
-        const montantPretAPayer = parseFloat(montantAPayer.toString())
-        console.log(montantPretAPayer);
-        const montantARendreData = await this.prisma.pret.findUnique({
-            where: {numeroPret},
-            select: {montantARendre:true}
-        });
+    //     const montantPretAPayer = parseFloat(montantAPayer.toString())
+    //     console.log(montantPretAPayer);
+    //     const montantARendreData = await this.prisma.pret.findUnique({
+    //         where: {numeroPret},
+    //         select: {montantARendre:true}
+    //     });
 
-        const valeurMontantPretARendre = montantARendreData.montantARendre;
-        const valeurMontantConverti = parseFloat(valeurMontantPretARendre.toString())
-        console.log(valeurMontantPretARendre)
+    //     const valeurMontantPretARendre = montantARendreData.montantARendre;
+    //     const valeurMontantConverti = parseFloat(valeurMontantPretARendre.toString())
+    //     console.log(valeurMontantPretARendre)
         
-        const montantReste = valeurMontantConverti - montantPretAPayer;
+    //     const montantReste = valeurMontantConverti - montantPretAPayer;
 
-        const nouveauPret = await this.prisma.pret.update({
-            where: {numeroPret},
-            data: {
-                ...updateLoan,
-                montantARendre: montantReste
-            }
-        });
+    //     const nouveauPret = await this.prisma.pret.update({
+    //         where: {numeroPret},
+    //         data: {
+    //             ...updateLoan,
+    //             montantARendre: montantReste
+    //         }
+    //     });
 
-        const nouveauPretTypeToJSON = JSON.stringify(nouveauPret)
+    //     const nouveauPretTypeToJSON = JSON.stringify(nouveauPret)
 
-        return nouveauPretTypeToJSON;
-    }
+    //     return nouveauPretTypeToJSON;
+    // }
 
-    async montantTotalNonPaye() {}
+    // async montantTotalNonPaye() {}
 
-    async montantTotalPaye() {}
+    // async montantTotalPaye() {}
 
 }
