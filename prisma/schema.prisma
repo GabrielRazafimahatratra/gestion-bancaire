@@ -8,35 +8,58 @@ datasource db {
 }
 
 model Client {
-  numeroCompte       String   @id
-  nomClient          String
-  prenomsClient      String
-  addresseClient     String   
-  emailClient        String   @unique
-  telephoneClient    String
-  montantClient      Float
-  prets              Pret[]
+  numeroCompte    String @id
+  nomClient       String
+  prenomsClient   String
+  addresseClient  String
+  emailClient     String @unique
+  telephoneClient String
+  montantClient   Float
+  prets           Pret[]
 }
 
 model Caissier {
-  numeroCaissier      String  @id
-  nomCaissier         String
-  prenomsCaissier     String
-  numeroCaisse        String
-  emailCaissier       String  @unique
-  password            String
-  telephoneCaissier   String
+  numeroCaissier    String @id
+  nomCaissier       String
+  prenomsCaissier   String
+  numeroCaisse      String
+  emailCaissier     String @unique
+  password          String
+  telephoneCaissier String
 }
 
 model Pret {
-  numeroPret                String    @id
-  montantPret               Decimal
-  tauxPret                  Decimal
-  delaiPret                 Int
-  datePret                  DateTime  @default(now()) @db.Date  
-  montantARendre            Decimal
-  emprunteur                Client    @relation(fields: [numeroCompteEmprunteur], references: [numeroCompte])
-  numeroCompteEmprunteur    String
+  numeroPret             String   @id
+  montantPret            Decimal
+  tauxPret               Decimal
+  delaiPret              Int
+  datePret               DateTime @default(now()) @db.Date
+  montantARendre         Decimal
+
+
+  emprunteur             Client   @relation(fields: [numeroCompteEmprunteur], references: [numeroCompte])
+  numeroCompteEmprunteur String
+
+  remboursementPret      RemboursementPret?
 }
 
 
+model Banque {
+  bankIdentifierCode    String    @id
+  numeroCompteBanque    String    @unique
+  solde                 Decimal
+
+  remboursementPrets    RemboursementPret[]   
+}
+
+
+model RemboursementPret {
+  idRemboursement           String  @id
+  montantAPayer             Decimal
+  numeroCompteDeLaBanque    String
+
+
+  pret                      Pret    @relation(fields: [idRemboursement], references: [numeroPret])
+  remboursementPret         Banque  @relation(fields: [numeroCompteDeLaBanque], references: [numeroCompteBanque])
+
+}
