@@ -11,6 +11,9 @@ export class CreateBanqueDto {
     numeroCompteBanque: string;
     
     @IsNumber()
-    solde: Decimal;
+    soldeBanque: Decimal;
+    
+    @IsNumber()
+    soldePayeParRemboursements: Decimal;
 
 }

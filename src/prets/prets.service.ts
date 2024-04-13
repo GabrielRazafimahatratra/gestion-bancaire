@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreatePretDto } from './dto/create-pret.dto';
 import { UpdatePretDto } from './dto/update-pret.dto';
-import { Decimal } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class PretsService {
@@ -18,14 +17,37 @@ export class PretsService {
         const loan = await this.prisma.pret.create({
             data: {
                 ...createLoan,
-                montantARendre: calculMontantARendre
+                montantARendre: calculMontantARendre,
+                restePret: calculMontantARendre
+                
             }
                 
         });
 
-        const loanTypeToJSON = JSON.stringify(loan);
+        const compteBancaireClient = loan.numeroCompteEmprunteur
 
-        return loanTypeToJSON;
+        const ancienSoldeClient = await this.prisma.client.findUnique({
+            where: {numeroCompte: compteBancaireClient}
+        });
+        const ancienSoldeClientToFloat = parseFloat(ancienSoldeClient.montantClient.toString());
+        const nouveauSoldeClient = ancienSoldeClientToFloat + montantPret;
+
+        const montantTotalClient = await this.prisma.client.update({
+            where: {numeroCompte: compteBancaireClient},
+            data: {
+                montantClient: nouveauSoldeClient
+            }
+           
+        });
+
+        
+        const loanTypeToJSON = JSON.stringify(loan);
+        const nouveauSoldeClientToJSONType = JSON.stringify(montantTotalClient);
+
+        return {
+            loanTypeToJSON,
+            nouveauSoldeClientToJSONType
+        };
     }
 
     async findAllLoans() {
