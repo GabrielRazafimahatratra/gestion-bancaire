@@ -79,5 +79,5 @@ model Retrait {
   numeroRetraits    String    @id
   numeroCompte      String
   montantRetrait    Decimal
-  dateRetrait       DateTime
+  dateRetrait       DateTime  @default(now())
 }
