@@ -33,9 +33,25 @@ export class RemboursementsService {
         const remboursementToJSONType = JSON.stringify(remboursement);
         const nouvelleValeurPretToJSONType = JSON.stringify(nouvelleValeurPret)
 
+        const ancienSoldeBanque = await this.prisma.banque.findUnique({
+            where: {numeroCompteBanque: remboursement.numeroCompteDeLaBanque}
+        });
+
+        const ancienSoldeBanqueValeur = parseFloat(ancienSoldeBanque.soldeBanque.toString());
+        const ancienSoldeParRemboursement = parseFloat(ancienSoldeBanque.soldePayeParRemboursements.toString());
+
+        const soldeParRemboursement = await this.prisma.banque.update({
+            where: {numeroCompteBanque: remboursement.numeroCompteDeLaBanque },
+            data: {
+                soldeBanque: valeurPret + ancienSoldeBanqueValeur,
+                soldePayeParRemboursements: montantAPayer + ancienSoldeParRemboursement
+            }
+        });
+
         return {
             remboursementToJSONType,
-            nouvelleValeurPretToJSONType
+            nouvelleValeurPretToJSONType,
+            soldeParRemboursement
         };
     }
 

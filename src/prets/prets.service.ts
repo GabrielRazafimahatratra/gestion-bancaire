@@ -39,6 +39,7 @@ export class PretsService {
             }
            
         });
+
         
         const loanTypeToJSON = JSON.stringify(loan);
         const nouveauSoldeClientToJSONType = JSON.stringify(montantTotalClient);
