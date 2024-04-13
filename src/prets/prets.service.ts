@@ -24,9 +24,23 @@ export class PretsService {
                 
         });
 
-        const loanTypeToJSON = JSON.stringify(loan);
 
-        return loanTypeToJSON;
+        const compteBancaireClient = loan.numeroCompteEmprunteur
+        const nouveauSoldeClient = await this.prisma.client.update({
+            where: {numeroCompte: compteBancaireClient},
+            data: {
+                montantClient: montantPret
+            }
+           
+        });
+        
+        const loanTypeToJSON = JSON.stringify(loan);
+        const nouveauSoldeClientToJSONType = JSON.stringify(nouveauSoldeClient);
+
+        return {
+            loanTypeToJSON,
+            nouveauSoldeClientToJSONType
+        };
     }
 
     async findAllLoans() {
