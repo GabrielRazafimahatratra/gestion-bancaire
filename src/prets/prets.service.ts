@@ -24,18 +24,24 @@ export class PretsService {
                 
         });
 
-
         const compteBancaireClient = loan.numeroCompteEmprunteur
-        const nouveauSoldeClient = await this.prisma.client.update({
+
+        const ancienSoldeClient = await this.prisma.client.findUnique({
+            where: {numeroCompte: compteBancaireClient}
+        });
+        const ancienSoldeClientToFloat = parseFloat(ancienSoldeClient.montantClient.toString());
+        const nouveauSoldeClient = ancienSoldeClientToFloat + montantPret;
+
+        const montantTotalClient = await this.prisma.client.update({
             where: {numeroCompte: compteBancaireClient},
             data: {
-                montantClient: montantPret
+                montantClient: nouveauSoldeClient
             }
            
         });
         
         const loanTypeToJSON = JSON.stringify(loan);
-        const nouveauSoldeClientToJSONType = JSON.stringify(nouveauSoldeClient);
+        const nouveauSoldeClientToJSONType = JSON.stringify(montantTotalClient);
 
         return {
             loanTypeToJSON,
