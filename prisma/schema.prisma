@@ -37,6 +37,7 @@ model Pret {
   delaiPret              Int
   datePret               DateTime @default(now()) @db.Date
   montantARendre         Decimal
+  restePret              Decimal
 
 
   emprunteur             Client   @relation(fields: [numeroCompteEmprunteur], references: [numeroCompte])

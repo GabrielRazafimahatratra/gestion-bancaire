@@ -12,9 +12,31 @@ export class RemboursementsService {
             data: createRemboursement
         });
 
-        const remboursementToJSONType = JSON.stringify(remboursement);
+        const numeroPretAPartirRemboursement = createRemboursement.numeroPret;
+        const montantPret = await this.prisma.pret.findUnique({
+            where: {numeroPret: numeroPretAPartirRemboursement},
+            select: {montantARendre: true}
+        });
 
-        return remboursementToJSONType;
+        const valeurPret = parseFloat(montantPret.montantARendre.toString());
+        const montantAPayer = parseFloat(remboursement.montantAPayer.toString());
+        const montantReste = valeurPret - montantAPayer;
+
+       
+        const nouvelleValeurPret = await this.prisma.pret.update({
+            where: {numeroPret: numeroPretAPartirRemboursement},
+            data: {
+                restePret: montantReste
+            }
+        });
+
+        const remboursementToJSONType = JSON.stringify(remboursement);
+        const nouvelleValeurPretToJSONType = JSON.stringify(nouvelleValeurPret)
+
+        return {
+            remboursementToJSONType,
+            nouvelleValeurPretToJSONType
+        };
     }
 
     async findAllRemboursements() {

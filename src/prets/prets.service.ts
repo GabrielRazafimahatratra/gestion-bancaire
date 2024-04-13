@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreatePretDto } from './dto/create-pret.dto';
 import { UpdatePretDto } from './dto/update-pret.dto';
-import { Decimal } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class PretsService {
@@ -18,7 +17,9 @@ export class PretsService {
         const loan = await this.prisma.pret.create({
             data: {
                 ...createLoan,
-                montantARendre: calculMontantARendre
+                montantARendre: calculMontantARendre,
+                restePret: calculMontantARendre
+                
             }
                 
         });
