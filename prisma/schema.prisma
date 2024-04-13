@@ -73,3 +73,11 @@ model RemboursementPret {
   rembourserPret            Pret    @relation(fields: [numeroPret], references: [numeroPret])
   numeroPret                String
 }
+
+
+model Retrait {
+  numeroRetraits    String    @id
+  numeroCompte      String
+  montantRetrait    Decimal
+  dateRetrait       DateTime
+}
