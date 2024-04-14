@@ -18,7 +18,8 @@ model Client {
 
   prets           Pret[]
   remboursements  RemboursementPret[]
-  retrait         Retrait[]
+  retraits        Retrait[]
+  versements      Versement[]
 }
 
 model Caissier {
@@ -83,4 +84,16 @@ model Retrait {
   dateRetrait       DateTime  @default(now())
 
   retraitClient     Client    @relation(fields: [numeroCompte], references: [numeroCompte])
+}
+
+
+model Versement {
+  numeroVersement           String    @id
+  numeroCompteVersement     String
+  montantVersement          Decimal
+  dateVersement             DateTime  @default(now())
+  nomVerseur                String
+  prenomsVerseur            String?
+
+  versementsClient          Client    @relation(fields: [numeroCompteVersement], references: [numeroCompte])
 }
