@@ -10,10 +10,16 @@ import { BanqueModule } from './banque/banque.module';
 import { PrismaService } from 'prisma/prisma.service';
 import { RemboursementModule } from './remboursements/remboursements.module';
 import { RetraitsModule } from './retraits/retraits.module';
+import { VersementsController } from './versements/versements.controller';
+import { VersementsService } from './versements/versements.service';
+import { VersementsModule } from './versements/versements.module';
+import { VirementsController } from './virements/virements.controller';
+import { VirementsService } from './virements/virements.service';
+import { VirementsModule } from './virements/virements.module';
 
 @Module({
-  imports: [ClientsModule, CaissiersModule, PretModule, BanqueModule, RemboursementModule, RetraitsModule],
-  controllers: [AppController, BanqueController],
-  providers: [AppService, BanqueService, PrismaService],
+  imports: [ClientsModule, CaissiersModule, PretModule, BanqueModule, RemboursementModule, RetraitsModule, VersementsModule, VirementsModule],
+  controllers: [AppController, BanqueController, VersementsController, VirementsController],
+  providers: [AppService, BanqueService, PrismaService, VersementsService, VirementsService],
 })
 export class AppModule {}

@@ -8,17 +8,20 @@ datasource db {
 }
 
 model Client {
-  numeroCompte    String @id
-  nomClient       String
-  prenomsClient   String
-  addresseClient  String
-  emailClient     String @unique
-  telephoneClient String
-  montantClient   Float
+  numeroCompte                  String                @id
+  nomClient                     String
+  prenomsClient                 String
+  addresseClient                String
+  emailClient                   String                @unique
+  telephoneClient               String
+  montantClient                 Float
 
-  prets           Pret[]
-  remboursements  RemboursementPret[]
-  retrait         Retrait[]
+  prets                         Pret[]
+  remboursements                RemboursementPret[]
+  retraits                      Retrait[]
+  versements                    Versement[]
+  virements_destinataires       Virement[]            @relation("clientDestinataire")
+  virements_expediteurs         Virement[]            @relation("clientExpediteur")
 }
 
 model Caissier {
@@ -44,7 +47,7 @@ model Pret {
   emprunteur             Client   @relation(fields: [numeroCompteEmprunteur], references: [numeroCompte])
   numeroCompteEmprunteur String
 
-  remboursements          RemboursementPret[]
+  remboursements         RemboursementPret[]
 
 }
 
@@ -83,4 +86,31 @@ model Retrait {
   dateRetrait       DateTime  @default(now())
 
   retraitClient     Client    @relation(fields: [numeroCompte], references: [numeroCompte])
+}
+
+
+model Versement {
+  numeroVersement           String    @id
+  numeroCompteVersement     String
+  montantVersement          Decimal
+  dateVersement             DateTime  @default(now())
+  nomVerseur                String
+  prenomsVerseur            String?
+
+  versementsClient          Client    @relation(fields: [numeroCompteVersement], references: [numeroCompte])
+}
+
+model Virement {
+  numeroVirement              String    @id
+  numeroCompteDestinataire    String    
+  numeroCompteExpediteur      String
+  montantVirement             Decimal
+  dateVirement                DateTime  @default(now())
+
+
+  clientDestinataire          Client    @relation("clientDestinataire", fields: [numeroCompteDestinataire], references: [numeroCompte])
+  clientExpediteur            Client    @relation("clientExpediteur", fields: [numeroCompteExpediteur], references: [numeroCompte])
+
+  @@unique([numeroCompteDestinataire, numeroCompteExpediteur])
+
 }
