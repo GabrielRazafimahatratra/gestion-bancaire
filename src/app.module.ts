@@ -13,10 +13,13 @@ import { RetraitsModule } from './retraits/retraits.module';
 import { VersementsController } from './versements/versements.controller';
 import { VersementsService } from './versements/versements.service';
 import { VersementsModule } from './versements/versements.module';
+import { VirementsController } from './virements/virements.controller';
+import { VirementsService } from './virements/virements.service';
+import { VirementsModule } from './virements/virements.module';
 
 @Module({
-  imports: [ClientsModule, CaissiersModule, PretModule, BanqueModule, RemboursementModule, RetraitsModule, VersementsModule],
-  controllers: [AppController, BanqueController, VersementsController],
-  providers: [AppService, BanqueService, PrismaService, VersementsService],
+  imports: [ClientsModule, CaissiersModule, PretModule, BanqueModule, RemboursementModule, RetraitsModule, VersementsModule, VirementsModule],
+  controllers: [AppController, BanqueController, VersementsController, VirementsController],
+  providers: [AppService, BanqueService, PrismaService, VersementsService, VirementsService],
 })
 export class AppModule {}
