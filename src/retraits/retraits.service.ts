@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateRetraitsDto } from './dtos/create-retraits.dto';
 import { UpdateRetraitsDto } from './dtos/update-retraits.dto';
+import { Decimal } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class RetraitsService {
@@ -15,7 +16,42 @@ export class RetraitsService {
         
         const retraitToJSONType = JSON.stringify(retrait);
 
+        
+        await this.reduireMontantApresRetrait(
+            createRetrait.numeroCompte,
+            createRetrait.montantRetrait
+        );
+        
         return retraitToJSONType;
+    }
+
+
+    async reduireMontantApresRetrait(numeroCompteClient: string, montantPretRetire: Decimal) {
+
+        const montantPret = parseFloat(montantPretRetire.toString())
+
+        const ancienSolde = await this.prisma.client.findUnique({
+            where: {numeroCompte: numeroCompteClient},
+            select: {montantClient: true}
+        });
+
+        const ancienSoldeExtraite = parseFloat(ancienSolde.montantClient.toString());
+
+        const nouveauSoldeClient = ancienSoldeExtraite - montantPret;
+        
+        const majSoldeClient = await this.prisma.client.update({
+            where: {numeroCompte: numeroCompteClient},
+            data: {
+                montantClient: nouveauSoldeClient
+            }
+        })
+        const nouveauSoldeClientToJSONType = JSON.stringify(nouveauSoldeClient);
+        const majSoldeClientToJSONType = JSON.stringify(majSoldeClient);
+
+        return {
+            nouveauSoldeClientToJSONType,
+            majSoldeClientToJSONType
+        };
     }
 
     async findAllRetraits() {
@@ -54,4 +90,5 @@ export class RetraitsService {
 
         return retraitToJSONType;
     }
+
 }
