@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { VirementsService } from './virements.service';
 import { UpdateVirementsDtos } from './dtos/update-virements.dtos';
+import { CreateVirementsDto } from './dtos/create-virements.dto';
 
 @Controller('virements')
 export class VirementsController {
@@ -8,8 +9,8 @@ export class VirementsController {
     constructor( private readonly virementService: VirementsService) {}
 
     @Post()
-    async createVersement(@Body() createVersement: CreateVersementsDto) {
-        return this.virementService.createVersement(createVersement); 
+    async createVirement(@Body() createVirement: CreateVirementsDto) {
+        return this.virementService.createVirement(createVirement);
     }
 
     @Get()

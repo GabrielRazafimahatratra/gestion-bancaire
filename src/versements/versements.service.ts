@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateVersementsDto } from './dtos/create-versements.dto';
 import { UpdateVersementsDto } from './dtos/update-versements.dto';
+import { Decimal } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class VersementsService {
@@ -15,7 +16,33 @@ export class VersementsService {
         
         const versementToJSONType = JSON.stringify(versement);
 
+        await this.nouvelMontantClientApresVersement(
+            createVersement.numeroCompteVersement,
+            createVersement.montantVersement
+        );
+
         return versementToJSONType;
+    }
+
+    async nouvelMontantClientApresVersement(numeroCompteClient: string, montantVersement: Decimal) {
+
+        const ancienMontantClient = await this.prisma.client.findUnique({
+            where: {numeroCompte: numeroCompteClient},
+            select: {montantClient: true}
+        });
+        
+        const ancienMontant = parseFloat(ancienMontantClient.montantClient.toString());
+        const montantVersementSurCompte = parseFloat(montantVersement.toString());
+
+        const nouveauMontantClient = await this.prisma.client.update({
+            where: {numeroCompte: numeroCompteClient},
+            data : {
+                montantClient: ancienMontant + montantVersementSurCompte
+            }
+        });
+        const nouveauMontantClientToJSONType = JSON.stringify(nouveauMontantClient);
+
+        return nouveauMontantClientToJSONType;
     }
 
     async findAllVersements() {

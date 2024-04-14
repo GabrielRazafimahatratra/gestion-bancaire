@@ -8,7 +8,7 @@ export class VirementsService {
 
     constructor( private readonly prisma: PrismaService) {}
 
-    async createVersement(createVirement: CreateVirementsDto) {
+    async createVirement(createVirement: CreateVirementsDto) {
         const virement = await this.prisma.virement.create({
             data: createVirement
         });

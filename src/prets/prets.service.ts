@@ -12,7 +12,7 @@ export class PretsService {
         const tauxPret = parseFloat(createLoan.tauxPret.toString());
         const montantPret = parseFloat(createLoan.montantPret.toString());
 
-         const calculMontantARendre = tauxPret * montantPret;
+        const calculMontantARendre = tauxPret * montantPret;
 
         const loan = await this.prisma.pret.create({
             data: {
