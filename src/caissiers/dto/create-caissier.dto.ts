@@ -2,8 +2,7 @@ import { IsString } from "class-validator"
 
 export class CreateCaissierDto {
     
-    @IsString()
-    numeroCaissier: string;
+    
     @IsString()  
     nomCaissier: string;
     @IsString()

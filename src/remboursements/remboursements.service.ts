@@ -8,8 +8,14 @@ export class RemboursementsService {
     constructor(private readonly prisma: PrismaService) {}
 
     async createRemboursement(createRemboursement: CreateRemboursementsDto) {
+
+        const idRemboursementGenere = await this.genererIdRemboursement();
+
         const remboursement = await this.prisma.remboursementPret.create({
-            data: createRemboursement
+            data: {
+                ...createRemboursement,
+                idRemboursement: idRemboursementGenere
+            }
         });
 
         const numeroPretAPartirRemboursement = createRemboursement.numeroPret;
@@ -53,6 +59,23 @@ export class RemboursementsService {
             nouvelleValeurPretToJSONType,
             soldeParRemboursement
         };
+    }
+
+    private async genererIdRemboursement(): Promise<string> {
+        const dernierRemboursement = await this.prisma.remboursementPret.findFirst({
+            orderBy: {
+                idRemboursement: 'desc',
+            },
+            select: {
+                idRemboursement: true,
+            }
+        });
+    
+        if (!dernierRemboursement) { return 'Remboursement001';}
+    
+        const lastNumber = parseInt(dernierRemboursement.idRemboursement.slice(13),10);
+        const newNumber = String(lastNumber + 1).padStart(3, '0');
+        return `Remboursement${newNumber}`;
     }
 
     async findAllRemboursements() {

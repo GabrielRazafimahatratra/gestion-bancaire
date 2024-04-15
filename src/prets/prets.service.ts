@@ -9,6 +9,8 @@ export class PretsService {
 
     async createLoan(createLoan : CreatePretDto) {
 
+        const numeroPretGenere = await this.genererNumeroPret();
+
         const tauxPret = parseFloat(createLoan.tauxPret.toString());
         const montantPret = parseFloat(createLoan.montantPret.toString());
 
@@ -18,7 +20,8 @@ export class PretsService {
             data: {
                 ...createLoan,
                 montantARendre: calculMontantARendre,
-                restePret: calculMontantARendre
+                restePret: calculMontantARendre,
+                numeroPret: numeroPretGenere
                 
             }
                 
@@ -48,6 +51,24 @@ export class PretsService {
             loanTypeToJSON,
             nouveauSoldeClientToJSONType
         };
+    }
+
+
+    private async genererNumeroPret(): Promise<string> {
+        const dernierPret = await this.prisma.pret.findFirst({
+            orderBy: {
+                numeroPret: 'desc',
+            },
+            select: {
+                numeroPret: true,
+            }
+        });
+    
+        if (!dernierPret) { return 'Pret001';}
+    
+        const lastNumber = parseInt(dernierPret.numeroPret.slice(4),10);
+        const newNumber = String(lastNumber + 1).padStart(3, '0');
+        return `Pret${newNumber}`;
     }
 
     async findAllLoans() {
@@ -81,38 +102,6 @@ export class PretsService {
         return loanToDeleteTypeToJSON;
     }
 
-    // async rendrePret(numeroPret: string, montantAPayer: Decimal,  updateLoan: UpdatePretDto) {
-
-    //     console.log(montantAPayer);
-        
-    //     const montantPretAPayer = parseFloat(montantAPayer.toString())
-    //     console.log(montantPretAPayer);
-    //     const montantARendreData = await this.prisma.pret.findUnique({
-    //         where: {numeroPret},
-    //         select: {montantARendre:true}
-    //     });
-
-    //     const valeurMontantPretARendre = montantARendreData.montantARendre;
-    //     const valeurMontantConverti = parseFloat(valeurMontantPretARendre.toString())
-    //     console.log(valeurMontantPretARendre)
-        
-    //     const montantReste = valeurMontantConverti - montantPretAPayer;
-
-    //     const nouveauPret = await this.prisma.pret.update({
-    //         where: {numeroPret},
-    //         data: {
-    //             ...updateLoan,
-    //             montantARendre: montantReste
-    //         }
-    //     });
-
-    //     const nouveauPretTypeToJSON = JSON.stringify(nouveauPret)
-
-    //     return nouveauPretTypeToJSON;
-    // }
-
-    // async montantTotalNonPaye() {}
-
-    // async montantTotalPaye() {}
+    
 
 }

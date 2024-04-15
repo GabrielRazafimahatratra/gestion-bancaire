@@ -8,15 +8,39 @@ export class CaissiersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createCashiers(createCashier: CreateCaissierDto) {
+
+    const numeroCaissierGenere = await this.genererNumeroCaissier();
+
     const cashier = await this.prisma.caissier.create({
-        data: createCashier
-    })
+        data: {
+          ...createCashier,
+          numeroCaissier: numeroCaissierGenere
+        }
+    });
 
     const cashierTypeToJSON = JSON.stringify(cashier)
 
     return cashierTypeToJSON;
     
   }
+
+  private async genererNumeroCaissier(): Promise<string> {
+    const lastCashier = await this.prisma.caissier.findFirst({
+        orderBy: {
+            numeroCaissier: 'desc',
+        },
+        select: {
+            numeroCaissier: true,
+        }
+    });
+
+    if (!lastCashier) { return 'Caissier001';}
+
+    const lastNumber = parseInt(lastCashier.numeroCaissier.slice(8),10);
+    const newNumber = String(lastNumber + 1).padStart(3, '0');
+    return `Caissier${newNumber}`;
+  }
+
 
   async findAllCashiers() {
     return this.prisma.caissier.findMany();

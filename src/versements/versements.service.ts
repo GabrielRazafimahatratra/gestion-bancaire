@@ -10,8 +10,14 @@ export class VersementsService {
     constructor( private readonly prisma: PrismaService) {}
 
     async createVersement(createVersement: CreateVersementsDto) {
+
+        const numeroVersementGenere = await this.genererNumeroVersement();
+
         const versement = await this.prisma.versement.create({
-            data: createVersement
+            data: {
+                ...createVersement,
+                numeroVersement: numeroVersementGenere
+            }
         });
         
         const versementToJSONType = JSON.stringify(versement);
@@ -43,6 +49,23 @@ export class VersementsService {
         const nouveauMontantClientToJSONType = JSON.stringify(nouveauMontantClient);
 
         return nouveauMontantClientToJSONType;
+    }
+
+    private async genererNumeroVersement(): Promise<string> {
+        const dernierVersement = await this.prisma.versement.findFirst({
+            orderBy: {
+                numeroVersement: 'desc',
+            },
+            select: {
+                numeroVersement: true,
+            }
+        });
+    
+        if (!dernierVersement) { return 'Versement001';}
+    
+        const lastNumber = parseInt(dernierVersement.numeroVersement.slice(9),10);
+        const newNumber = String(lastNumber + 1).padStart(3, '0');
+        return `Versement${newNumber}`;
     }
 
     async findAllVersements() {

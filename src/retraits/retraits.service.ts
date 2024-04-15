@@ -10,8 +10,14 @@ export class RetraitsService {
     constructor(private readonly prisma: PrismaService) {}
 
     async createRetrait(createRetrait: CreateRetraitsDto) {
+
+        const numeroRetraitGenere = await this.genererNumeroRetrait();
+
         const retrait = await this.prisma.retrait.create({
-            data: createRetrait
+            data: {
+                ...createRetrait,
+                numeroRetraits: numeroRetraitGenere
+            }
         });
         
         const retraitToJSONType = JSON.stringify(retrait);
@@ -52,6 +58,23 @@ export class RetraitsService {
             nouveauSoldeClientToJSONType,
             majSoldeClientToJSONType
         };
+    }
+
+    private async genererNumeroRetrait(): Promise<string> {
+        const dernierRetrait = await this.prisma.retrait.findFirst({
+            orderBy: {
+                numeroRetraits: 'desc',
+            },
+            select: {
+                numeroRetraits: true,
+            }
+        });
+    
+        if (!dernierRetrait) { return 'Retrait001';}
+    
+        const lastNumber = parseInt(dernierRetrait.numeroRetraits.slice(7),10);
+        const newNumber = String(lastNumber + 1).padStart(3, '0');
+        return `Retrait${newNumber}`;
     }
 
     async findAllRetraits() {
