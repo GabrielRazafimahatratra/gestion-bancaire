@@ -4,9 +4,6 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 export class CreateBanqueDto {
 
     @IsString()
-    bankIdentifierCode: string;
-
-    @IsString()
     @IsNotEmpty()
     numeroCompteBanque: string;
     

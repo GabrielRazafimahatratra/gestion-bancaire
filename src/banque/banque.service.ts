@@ -8,13 +8,36 @@ export class BanqueService {
     constructor(private readonly prisma: PrismaService) {}
 
     async createBank(createBank: CreateBanqueDto) {
+
+        const genererBankIdentifierCode = await this.genererBankIdentifierCode();
+
         const bank = await this.prisma.banque.create({
-            data: createBank
+            data: {
+                ...createBank,
+                bankIdentifierCode: genererBankIdentifierCode
+            }
         });
 
         const BankToJSONType = JSON.stringify(bank);
 
         return BankToJSONType;
+    }
+
+    private async genererBankIdentifierCode(): Promise<string> {
+        const lastBank = await this.prisma.banque.findFirst({
+            orderBy: {
+                bankIdentifierCode: 'desc',
+            },
+            select: {
+                bankIdentifierCode: true,
+            }
+        });
+
+        if (!lastBank) { return 'Bank001';}
+
+        const lastNumber = parseInt(lastBank.bankIdentifierCode.slice(4),10);
+        const newNumber = String(lastNumber + 1).padStart(3, '0');
+        return `Bank${newNumber}`;
     }
 
     async findAllBanks() {

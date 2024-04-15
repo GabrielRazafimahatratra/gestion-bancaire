@@ -5,10 +5,6 @@ export class CreateVirementsDto {
 
     @IsString()
     @IsNotEmpty()
-    numeroVirement: string;
-
-    @IsString()
-    @IsNotEmpty()
     numeroCompteDestinataire: string;
 
     @IsString()
