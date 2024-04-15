@@ -7,7 +7,7 @@ import { UpdatePretDto } from './dto/update-pret.dto';
 export class PretsService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async createLoan(createLoan : CreatePretDto) {
+    async createLoan(createLoan: CreatePretDto) {
 
         const numeroPretGenere = await this.genererNumeroPret();
 
@@ -22,7 +22,6 @@ export class PretsService {
                 montantARendre: calculMontantARendre,
                 restePret: calculMontantARendre,
                 numeroPret: numeroPretGenere
-                
             }
                 
         });
@@ -72,6 +71,7 @@ export class PretsService {
     }
 
     async findAllLoans() {
+        await this.nombreTotalPretNonPaye();
         return this.prisma.pret.findMany()
     }
 
@@ -102,6 +102,32 @@ export class PretsService {
         return loanToDeleteTypeToJSON;
     }
 
-    
+    async nombreTotalPretNonPaye() {
+
+        const nombreTotalPretNonPaye = await this.prisma.pret.count({
+            where: {
+                restePret: {
+                    gt : 0
+                }
+            }
+        });
+        console.log(nombreTotalPretNonPaye);
+        const nombreTotalPretNonPayeToJSONType = JSON.stringify(nombreTotalPretNonPaye);
+
+        return nombreTotalPretNonPayeToJSONType;
+    }
+
+    async nombreTotalPretPaye() {
+
+        const nombreTotalPretPaye = await this.prisma.pret.count({
+            where: {
+                restePret: 0
+            }
+        });
+
+        const nombreTotalPretPayeToJSONType = JSON.stringify(nombreTotalPretPaye);
+
+        return nombreTotalPretPayeToJSONType;
+    }
 
 }
