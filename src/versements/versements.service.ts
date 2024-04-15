@@ -104,4 +104,20 @@ export class VersementsService {
 
         return versementToJSONType;
     }
+
+    async nombreVersementParMois() {
+        const versementParMois = await this.prisma.versement.groupBy({
+            by: ['dateVersement'],
+            _count: {
+                numeroVersement: true,
+            },
+            orderBy: {
+                dateVersement: 'desc'
+            }
+        });
+
+        const versementParMoisToJSONType = JSON.stringify(versementParMois);
+
+        return versementParMoisToJSONType;
+    }
 }
