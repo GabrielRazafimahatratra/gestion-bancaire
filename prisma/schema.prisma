@@ -121,7 +121,7 @@ model Historique {
   type                  EventType
   identifiantOfType     String
   donnee                Json
-  dateCreation          DateTime
+  dateCreation          DateTime  @default(now())
 }
 
 enum EventType {

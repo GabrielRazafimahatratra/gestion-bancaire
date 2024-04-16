@@ -2,10 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreatePretDto } from './dto/create-pret.dto';
 import { UpdatePretDto } from './dto/update-pret.dto';
+import { HistoriquesService } from 'src/historiques/historiques.service';
+import { EventType } from 'src/historiques/event-type';
 
 @Injectable()
 export class PretsService {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly historique: HistoriquesService
+    ) {}
 
     async createLoan(createLoan: CreatePretDto) {
 
@@ -45,6 +50,9 @@ export class PretsService {
         
         const loanTypeToJSON = JSON.stringify(loan);
         const nouveauSoldeClientToJSONType = JSON.stringify(montantTotalClient);
+
+        await this.historique.historiquesDesEvenements(EventType.PRET_CREATED, loan.numeroPret, loanTypeToJSON)
+
 
         return {
             loanTypeToJSON,
@@ -88,6 +96,9 @@ export class PretsService {
         });
 
         const updateLoanTypeToJSON = JSON.stringify(updateLoan);
+        
+        await this.historique.historiquesDesEvenements(EventType.PRET_UPDATED, updateLoan.numeroPret, updateLoanTypeToJSON)
+
 
         return updateLoanTypeToJSON;
     }
@@ -98,6 +109,9 @@ export class PretsService {
         });
 
         const loanToDeleteTypeToJSON = JSON.stringify(loanToDelete);
+
+        await this.historique.historiquesDesEvenements(EventType.PRET_DELETED, loanToDelete.numeroPret, loanToDeleteTypeToJSON)
+
 
         return loanToDeleteTypeToJSON;
     }

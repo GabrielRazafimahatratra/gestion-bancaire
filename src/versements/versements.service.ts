@@ -3,11 +3,16 @@ import { PrismaService } from 'prisma/prisma.service';
 import { CreateVersementsDto } from './dtos/create-versements.dto';
 import { UpdateVersementsDto } from './dtos/update-versements.dto';
 import { Decimal } from '@prisma/client/runtime/library';
+import { HistoriquesService } from 'src/historiques/historiques.service';
+import { EventType } from 'src/historiques/event-type';
 
 @Injectable()
 export class VersementsService {
 
-    constructor( private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly historique: HistoriquesService
+    ) {}
 
     async createVersement(createVersement: CreateVersementsDto) {
 
@@ -26,6 +31,9 @@ export class VersementsService {
             createVersement.numeroCompteVersement,
             createVersement.montantVersement
         );
+
+        await this.historique.historiquesDesEvenements(EventType.VERSEMENT_CREATED, versement.numeroVersement, versementToJSONType)
+
 
         return versementToJSONType;
     }
@@ -85,24 +93,30 @@ export class VersementsService {
     }
 
     async updateVersement(numeroVersement: string, updateVersement: UpdateVersementsDto) {
-        const versement = await this.prisma.versement.update({
+        const updatedVersement = await this.prisma.versement.update({
             where: {numeroVersement: numeroVersement},
             data: updateVersement
         });
 
-        const versementToJSONType = JSON.stringify(versement);
+        const updatedVersementToJSONType = JSON.stringify(updatedVersement);
 
-        return versementToJSONType;
+        await this.historique.historiquesDesEvenements(EventType.VERSEMENT_UPDATED, updatedVersement.numeroVersement, updatedVersementToJSONType)
+
+
+        return updatedVersementToJSONType;
     }
 
     async deleteVersement(numeroVersement: string) {
-        const versement = await this.prisma.versement.delete({
+        const deletedVersement = await this.prisma.versement.delete({
             where: {numeroVersement: numeroVersement}
         });
         
-        const versementToJSONType = JSON.stringify(versement);
+        const deletedVersementToJSONType = JSON.stringify(deletedVersement);
 
-        return versementToJSONType;
+        await this.historique.historiquesDesEvenements(EventType.VERSEMENT_DELETED, deletedVersement.numeroVersement, deletedVersementToJSONType)
+
+
+        return deletedVersementToJSONType;
     }
 
     async nombreVersementParMois() {

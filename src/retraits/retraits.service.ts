@@ -3,11 +3,17 @@ import { PrismaService } from 'prisma/prisma.service';
 import { CreateRetraitsDto } from './dtos/create-retraits.dto';
 import { UpdateRetraitsDto } from './dtos/update-retraits.dto';
 import { Decimal } from '@prisma/client/runtime/library';
+import { HistoriquesService } from 'src/historiques/historiques.service';
+import { EventType } from 'src/historiques/event-type';
 
 @Injectable()
 export class RetraitsService {
 
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly historique: HistoriquesService
+
+    ) {}
 
     async createRetrait(createRetrait: CreateRetraitsDto) {
 
@@ -27,6 +33,9 @@ export class RetraitsService {
             createRetrait.numeroCompte,
             createRetrait.montantRetrait
         );
+
+        await this.historique.historiquesDesEvenements(EventType.RETRAIT_CREATED, retrait.numeroRetraits, retraitToJSONType)
+
         
         return retraitToJSONType;
     }
@@ -94,24 +103,29 @@ export class RetraitsService {
     }
 
     async updateRetrait(numeroRetrait: string, updateRetrait: UpdateRetraitsDto) {
-        const retrait = await this.prisma.retrait.update({
+        const updatedRetrait = await this.prisma.retrait.update({
             where: {numeroRetraits: numeroRetrait},
             data: updateRetrait
         });
 
-        const retraitToJSONType = JSON.stringify(retrait);
+        const updatedRetraitToJSONType = JSON.stringify(updatedRetrait);
 
-        return retraitToJSONType;
+        await this.historique.historiquesDesEvenements(EventType.RETRAIT_UPDATED, updatedRetrait.numeroRetraits, updatedRetraitToJSONType)
+
+
+        return updatedRetraitToJSONType;
     }
 
     async deleteRetrait(numeroRetrait: string) {
-        const retrait = await this.prisma.retrait.delete({
+        const deletedRetrait = await this.prisma.retrait.delete({
             where: {numeroRetraits: numeroRetrait}
         });
         
-        const retraitToJSONType = JSON.stringify(retrait);
+        const deletedRetraitToJSONType = JSON.stringify(deletedRetrait);
 
-        return retraitToJSONType;
+        await this.historique.historiquesDesEvenements(EventType.RETRAIT_DELETED, deletedRetrait.numeroRetraits, deletedRetraitToJSONType)
+
+        return deletedRetraitToJSONType;
     }
 
 }

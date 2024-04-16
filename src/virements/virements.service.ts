@@ -3,11 +3,16 @@ import { PrismaService } from 'prisma/prisma.service';
 import { CreateVirementsDto } from './dtos/create-virements.dto';
 import { UpdateVirementsDtos } from './dtos/update-virements.dtos';
 import { Decimal } from '@prisma/client/runtime/library';
+import { HistoriquesService } from 'src/historiques/historiques.service';
+import { EventType } from 'src/historiques/event-type';
 
 @Injectable()
 export class VirementsService {
 
-    constructor( private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly historique: HistoriquesService
+    ) {}
 
     async createVirement(createVirement: CreateVirementsDto) {
 
@@ -31,6 +36,9 @@ export class VirementsService {
             createVirement.numeroCompteDestinataire,
             createVirement.montantVirement
         );
+
+        await this.historique.historiquesDesEvenements(EventType.VIREMENT_CREATED, virement.numeroVirement, virementToJSONType)
+
 
         return virementToJSONType;
     }
@@ -118,23 +126,29 @@ export class VirementsService {
     }
 
     async updateVirement(numeroVirement: string, updateVirement: UpdateVirementsDtos) {
-        const virement = await this.prisma.virement.update({
+        const updatedVirement = await this.prisma.virement.update({
             where: {numeroVirement: numeroVirement},
             data: updateVirement
         });
 
-        const virementToJSONType = JSON.stringify(virement);
+        const updatedVirementToJSONType = JSON.stringify(updatedVirement);
 
-        return virementToJSONType;
+        await this.historique.historiquesDesEvenements(EventType.VIREMENT_UPDATED, updatedVirement.numeroVirement, updatedVirementToJSONType)
+
+
+        return updatedVirementToJSONType;
     }
 
     async deleteVirement(numeroVirement: string) {
-        const virement = await this.prisma.virement.delete({
+        const deletedVirement = await this.prisma.virement.delete({
             where: {numeroVirement: numeroVirement}
         });
         
-        const virementToJSONType = JSON.stringify(virement);
+        const deletedVirementToJSONType = JSON.stringify(deletedVirement);
 
-        return virementToJSONType;
+        await this.historique.historiquesDesEvenements(EventType.VIREMENT_DELETED, deletedVirement.numeroVirement, deletedVirementToJSONType)
+
+
+        return deletedVirementToJSONType;
     }
 }
