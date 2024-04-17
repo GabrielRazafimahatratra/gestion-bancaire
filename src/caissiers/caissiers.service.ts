@@ -52,6 +52,12 @@ export class CaissiersService {
     });
   }
 
+  findOneCashierByEmail(email: string) {
+    return this.prisma.caissier.findUnique({
+      where: {emailCaissier: email}
+    });
+  }
+
   async updateCashier(numeroCaissier: string, updateCashierDto: UpdateCaissierDto): Promise<string> {
     
     const updateCashier = await this.prisma.caissier.update({
