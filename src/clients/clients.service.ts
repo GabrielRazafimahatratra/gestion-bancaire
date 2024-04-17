@@ -2,13 +2,37 @@ import { Injectable } from '@nestjs/common';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { PrismaService } from 'prisma/prisma.service';
+import { HistoriquesService } from 'src/historiques/historiques.service';
+import { EventType } from 'src/historiques/event-type';
 
 @Injectable()
 export class ClientsService {
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly historique : HistoriquesService
+
+  ) {}
+
 
   async createClient(createClientDto: CreateClientDto){
+
+    const numeroCompteClient = await this.genererCompteClient(); 
+
+    const client = await this.prisma.client.create({
+      data: {
+        ...createClientDto,
+        numeroCompte: numeroCompteClient
+      }
+    });
+    const clientTypeToJSON = JSON.stringify(client)
+
+    await this.historique.historiquesDesEvenements(EventType.CLIENT_CREATED, client.numeroCompte, clientTypeToJSON)
+
+    return clientTypeToJSON
+  }
+
+  private async genererCompteClient(): Promise<string> {
 
     const lastClient = await this.prisma.client.findFirst({
       orderBy: {numeroCompte: 'desc'}
@@ -26,15 +50,7 @@ export class ClientsService {
 
     newAccountNumber += middleNumber.toString().padStart(10, '0') + '-81';
 
-    const client = await this.prisma.client.create({
-      data: {
-        ...createClientDto,
-        numeroCompte: newAccountNumber
-      }
-    });
-    const clientTypeToJSON = JSON.stringify(client)
-    
-    return clientTypeToJSON
+    return newAccountNumber;
   }
 
   async findAllClients() {
@@ -56,6 +72,9 @@ export class ClientsService {
 
     const updateClientTypeToJSON = JSON.stringify(updateClient);
 
+    await this.historique.historiquesDesEvenements(EventType.CLIENT_UPDATED, updateClient.numeroCompte, updateClientTypeToJSON)
+
+
     return updateClientTypeToJSON;
   }
 
@@ -64,7 +83,10 @@ export class ClientsService {
       where: {numeroCompte}
     });
 
-    const deletedClientTypeToJSON = JSON.stringify(deletedClient)
+    const deletedClientTypeToJSON = JSON.stringify(deletedClient);
+
+    await this.historique.historiquesDesEvenements(EventType.CLIENT_DELETED, deletedClient.numeroCompte, deletedClientTypeToJSON)
+
 
     return deletedClientTypeToJSON;
 

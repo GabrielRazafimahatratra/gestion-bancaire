@@ -2,10 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateRemboursementsDto } from './dto/create-remboursements.dto';
 import { UpdateRemboursementsDto } from './dto/update-remboursement.dto';
+import { HistoriquesService } from 'src/historiques/historiques.service';
+import { EventType } from 'src/historiques/event-type';
 
 @Injectable()
 export class RemboursementsService {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly historique: HistoriquesService
+    ) {}
 
     async createRemboursement(createRemboursement: CreateRemboursementsDto) {
 
@@ -54,6 +59,10 @@ export class RemboursementsService {
             }
         });
 
+
+        await this.historique.historiquesDesEvenements(EventType.REMBOURSEMENT_CREATED, remboursement.idRemboursement, remboursementToJSONType)
+
+
         return {
             remboursementToJSONType,
             nouvelleValeurPretToJSONType,
@@ -95,23 +104,29 @@ export class RemboursementsService {
     }
 
     async updateRemboursement(idRemboursement: string, updateRemboursement: UpdateRemboursementsDto) {
-        const remboursement = await this.prisma.remboursementPret.update({
+        const updatedRemboursement = await this.prisma.remboursementPret.update({
             where: {idRemboursement},
             data: updateRemboursement
         });
 
-        const remboursementToJSONType = JSON.stringify(remboursement);
+        const updatedRemboursementToJSONType = JSON.stringify(updatedRemboursement);
 
-        return remboursementToJSONType;
+        await this.historique.historiquesDesEvenements(EventType.REMBOURSEMENT_UPDATED, updatedRemboursement.idRemboursement, updatedRemboursementToJSONType)
+
+
+        return updatedRemboursementToJSONType;
     }
     
     async deleteRemboursement(idRemboursement: string) {
-        const remboursement =await this.prisma.remboursementPret.delete({
+        const deletedRemboursement =await this.prisma.remboursementPret.delete({
             where: {idRemboursement}
         });
 
-        const remboursementToJSONType = JSON.stringify(remboursement);
+        const deletedRemboursementToJSONType = JSON.stringify(deletedRemboursement);
 
-        return remboursementToJSONType;
+        await this.historique.historiquesDesEvenements(EventType.REMBOURSEMENT_DELETED, deletedRemboursement.idRemboursement, deletedRemboursementToJSONType)
+
+
+        return deletedRemboursementToJSONType;
     }
 }

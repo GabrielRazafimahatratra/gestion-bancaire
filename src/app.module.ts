@@ -16,9 +16,10 @@ import { VersementsModule } from './versements/versements.module';
 import { VirementsController } from './virements/virements.controller';
 import { VirementsService } from './virements/virements.service';
 import { VirementsModule } from './virements/virements.module';
+import { HistoriquesModule } from './historiques/historiques.module';
 
 @Module({
-  imports: [ClientsModule, CaissiersModule, PretModule, BanqueModule, RemboursementModule, RetraitsModule, VersementsModule, VirementsModule],
+  imports: [ClientsModule, CaissiersModule, PretModule, BanqueModule, RemboursementModule, RetraitsModule, VersementsModule, VirementsModule, HistoriquesModule],
   controllers: [AppController, BanqueController, VersementsController, VirementsController],
   providers: [AppService, BanqueService, PrismaService, VersementsService, VirementsService],
 })

@@ -114,3 +114,37 @@ model Virement {
   @@unique([numeroCompteDestinataire, numeroCompteExpediteur])
 
 }
+
+
+model Historique {
+  idHistorique          String    @id
+  type                  EventType
+  identifiantOfType     String
+  donnee                Json
+  dateCreation          DateTime  @default(now())
+}
+
+enum EventType {
+  PRET_CREATED
+  PRET_UPDATED
+  PRET_DELETED
+  VIREMENT_CREATED
+  VIREMENT_UPDATED
+  VIREMENT_DELETED
+  REMBOURSEMENT_CREATED
+  REMBOURSEMENT_UPDATED
+  REMBOURSEMENT_DELETED
+  VERSEMENT_CREATED
+  VERSEMENT_UPDATED
+  VERSEMENT_DELETED
+  CLIENT_CREATED
+  CLIENT_UPDATED
+  CLIENT_DELETED
+  CAISSIER_CREATED
+  CAISSIER_UPDATED
+  CAISSIER_DELETED
+  RETRAIT_CREATED
+  RETRAIT_UPDATED
+  RETRAIT_DELETED
+  
+}
