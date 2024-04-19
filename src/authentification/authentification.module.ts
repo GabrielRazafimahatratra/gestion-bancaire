@@ -1,32 +1,23 @@
 import { Module } from '@nestjs/common';
 import { AuthentificationService } from './authentification.service';
 import { AuthentificationController } from './authentification.controller';
-import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { LocalStrategy } from './strategy/local.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { PassportModule } from '@nestjs/passport';
+import { CaissiersService } from 'src/caissiers/caissiers.service';
+import { PrismaService } from 'prisma/prisma.service';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    UsersModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: {
-          expiresIn: parseInt(
-            configService.getOrThrow<string>(
-              'ACCESS_TOKEN_VALIDITY_DURATION_IN_SEC',
-            ),
-          ),
-        },
-      }),
-      inject: [ConfigService],
-    }),
+    PassportModule,
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+    })
+    
   ],
-  providers: [AuthentificationService,LocalStrategy, JwtStrategy],
+  providers: [AuthentificationService, JwtStrategy, CaissiersService, PrismaService, ConfigService],
   controllers: [AuthentificationController],
-  exports: [AuthentificationService, JwtModule],
+  exports: [AuthentificationService],
 })
 export class AuthentificationModule {}
