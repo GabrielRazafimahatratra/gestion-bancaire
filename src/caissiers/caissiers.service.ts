@@ -24,7 +24,7 @@ export class CaissiersService {
     
   }
 
-  private async genererNumeroCaissier(): Promise<string> {
+  async genererNumeroCaissier(): Promise<string> {
     const lastCashier = await this.prisma.caissier.findFirst({
         orderBy: {
             numeroCaissier: 'desc',

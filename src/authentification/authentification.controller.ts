@@ -1,28 +1,29 @@
-import { BadRequestException, Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
 import { AuthentificationService } from './authentification.service';
 
-import {Public} from './decorators/public.decorator';
-import { AuthGuard } from '@nestjs/passport';
-import { RegisterRequestDto } from './dtos/register-request.dto';
-import { LoginResponseDTO } from './dtos/login-response.dto';
-import { RegisterResponseDTO } from './dtos/register-response.dto';
+import { LoginDto } from './dtos/login.dto';
+import { RegisterDto } from './dtos/register.dto';
+import { JwtGuard } from './guards/jwt.guard';
 
 
-@Public()
+
 @Controller('authentification')
 export class AuthentificationController {
     constructor(private authService: AuthentificationService) {}
 
-    @UseGuards(AuthGuard('local'))
     @Post('login')
-    async login(@Request() req): Promise<LoginResponseDTO | BadRequestException> {
-        return this.authService.login(req.user);
+    async login(@Body() loginDto: LoginDto) {
+        return this.authService.login(loginDto.emailCaissier, loginDto.password);
     }
 
     @Post('register')
-    async register(
-        @Body() registerBody: RegisterRequestDto,
-    ): Promise<RegisterResponseDTO | BadRequestException> {
-        return await this.authService.register(registerBody)
+    async register(@Body() registerDto: RegisterDto) {
+        return await this.authService.register(registerDto)
+    }
+
+    @UseGuards(JwtGuard)
+    @Post('profile')
+    async getProfile(@Request() req) {
+        return req.user;
     }
 }

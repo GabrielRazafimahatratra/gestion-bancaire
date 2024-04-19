@@ -17,10 +17,16 @@ import { VirementsController } from './virements/virements.controller';
 import { VirementsService } from './virements/virements.service';
 import { VirementsModule } from './virements/virements.module';
 import { HistoriquesModule } from './historiques/historiques.module';
+import { AuthentificationModule } from './authentification/authentification.module';
+import { HistoriquesService } from './historiques/historiques.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [ClientsModule, CaissiersModule, PretModule, BanqueModule, RemboursementModule, RetraitsModule, VersementsModule, VirementsModule, HistoriquesModule],
+  imports: [
+    ConfigModule.forRoot({ envFilePath: '.env'}),
+    
+    ClientsModule, CaissiersModule, PretModule, BanqueModule, RemboursementModule, RetraitsModule, VersementsModule, VirementsModule, HistoriquesModule, AuthentificationModule],
   controllers: [AppController, BanqueController, VersementsController, VirementsController],
-  providers: [AppService, BanqueService, PrismaService, VersementsService, VirementsService],
+  providers: [AppService, BanqueService, PrismaService, VersementsService, VirementsService, HistoriquesService],
 })
 export class AppModule {}
