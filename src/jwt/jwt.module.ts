@@ -1,12 +1,8 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 
-@Module({
-    imports: [
-        ConfigModule.forRoot()
-    ],
-    providers: [ JwtService],
+@Module({ 
+    providers: [JwtService]
 })
 export class JwtModule {}
 
