@@ -42,4 +42,13 @@ export class HistoriquesService {
         return `Historique${newNumber}`;
     }
 
+    async findAllEvents() {
+        const allEvents = await this.prisma.historique.findMany();
+        
+        const allEventsToJSONType = JSON.stringify(allEvents);
+
+
+        return allEventsToJSONType;
+    }
+
 }
