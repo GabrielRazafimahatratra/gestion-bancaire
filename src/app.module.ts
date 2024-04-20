@@ -20,6 +20,8 @@ import { HistoriquesModule } from './historiques/historiques.module';
 import { AuthentificationModule } from './authentification/authentification.module';
 import { HistoriquesService } from './historiques/historiques.service';
 import { ConfigModule } from '@nestjs/config';
+import { MyemailService } from './myemail/myemail.service';
+import { MailerService } from './mailer/mailer.service';
 
 @Module({
   imports: [
@@ -27,6 +29,6 @@ import { ConfigModule } from '@nestjs/config';
     
     ClientsModule, CaissiersModule, PretModule, BanqueModule, RemboursementModule, RetraitsModule, VersementsModule, VirementsModule, HistoriquesModule, AuthentificationModule],
   controllers: [AppController, BanqueController, VersementsController, VirementsController],
-  providers: [AppService, BanqueService, PrismaService, VersementsService, VirementsService, HistoriquesService],
+  providers: [AppService, BanqueService, PrismaService, VersementsService, VirementsService, HistoriquesService, MyemailService, MailerService],
 })
 export class AppModule {}
