@@ -5,13 +5,15 @@ import { UpdateRetraitsDto } from './dtos/update-retraits.dto';
 import { Decimal } from '@prisma/client/runtime/library';
 import { HistoriquesService } from 'src/historiques/historiques.service';
 import { EventType } from 'src/historiques/event-type';
+import { MyemailService } from 'src/myemail/myemail.service';
 
 @Injectable()
 export class RetraitsService {
 
     constructor(
         private readonly prisma: PrismaService,
-        private readonly historique: HistoriquesService
+        private readonly historique: HistoriquesService,
+        private readonly myEmailService: MyemailService
 
     ) {}
 
@@ -34,7 +36,14 @@ export class RetraitsService {
             createRetrait.montantRetrait
         );
 
-        await this.historique.historiquesDesEvenements(EventType.RETRAIT_CREATED, retrait.numeroRetraits, retraitToJSONType)
+        await this.historique.historiquesDesEvenements(EventType.RETRAIT_CREATED, retrait.numeroRetraits, retraitToJSONType);
+
+        await this.myEmailService.sendEmailForRetrait(
+            retrait.numeroRetraits,
+            retrait.numeroCompte,
+            retrait.montantRetrait,
+            retrait.dateRetrait
+        );
 
         
         return retraitToJSONType;

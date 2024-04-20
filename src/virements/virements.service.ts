@@ -5,13 +5,15 @@ import { UpdateVirementsDtos } from './dtos/update-virements.dtos';
 import { Decimal } from '@prisma/client/runtime/library';
 import { HistoriquesService } from 'src/historiques/historiques.service';
 import { EventType } from 'src/historiques/event-type';
+import { MyemailService } from 'src/myemail/myemail.service';
 
 @Injectable()
 export class VirementsService {
 
     constructor(
         private readonly prisma: PrismaService,
-        private readonly historique: HistoriquesService
+        private readonly historique: HistoriquesService,
+        private readonly myEmailService: MyemailService
     ) {}
 
     async createVirement(createVirement: CreateVirementsDto) {
@@ -37,7 +39,15 @@ export class VirementsService {
             createVirement.montantVirement
         );
 
-        await this.historique.historiquesDesEvenements(EventType.VIREMENT_CREATED, virement.numeroVirement, virementToJSONType)
+        await this.historique.historiquesDesEvenements(EventType.VIREMENT_CREATED, virement.numeroVirement, virementToJSONType);
+
+        await this.myEmailService.sendEmailForVirement(
+            virement.numeroVirement,
+            virement.numeroCompteDestinataire,
+            virement.numeroCompteExpediteur,
+            virement.montantVirement,
+            virement.dateVirement
+        );
 
 
         return virementToJSONType;

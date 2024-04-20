@@ -34,8 +34,20 @@ export class VersementsService {
             createVersement.montantVersement
         );
 
-        await this.historique.historiquesDesEvenements(EventType.VERSEMENT_CREATED, versement.numeroVersement, versementToJSONType)
-        await this.envoiEmail.sendCustomEmail()
+        await this.historique.historiquesDesEvenements(EventType.VERSEMENT_CREATED, versement.numeroVersement, versementToJSONType);
+        await this.envoiEmail.sendEmailForVersements(
+            versement.numeroVersement,
+            versement.numeroCompteVersement,
+            versement.montantVersement,
+            versement.dateVersement,
+            versement.nomVerseur,
+            versement.prenomsVerseur
+        );
+
+        
+
+
+
 
         return versementToJSONType;
     }
