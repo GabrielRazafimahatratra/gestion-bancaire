@@ -4,12 +4,15 @@ import { CreateRemboursementsDto } from './dto/create-remboursements.dto';
 import { UpdateRemboursementsDto } from './dto/update-remboursement.dto';
 import { HistoriquesService } from 'src/historiques/historiques.service';
 import { EventType } from 'src/historiques/event-type';
+import { MyemailService } from 'src/myemail/myemail.service';
 
 @Injectable()
 export class RemboursementsService {
     constructor(
         private readonly prisma: PrismaService,
-        private readonly historique: HistoriquesService
+        private readonly historique: HistoriquesService,
+        private readonly myEmailService: MyemailService,
+    
     ) {}
 
     async createRemboursement(createRemboursement: CreateRemboursementsDto) {
@@ -60,7 +63,15 @@ export class RemboursementsService {
         });
 
 
-        await this.historique.historiquesDesEvenements(EventType.REMBOURSEMENT_CREATED, remboursement.idRemboursement, remboursementToJSONType)
+        await this.historique.historiquesDesEvenements(EventType.REMBOURSEMENT_CREATED, remboursement.idRemboursement, remboursementToJSONType);
+
+        await this.myEmailService.sendEmailForRemboursement(
+            remboursement.idRemboursement,
+            remboursement.numeroCompteDeLaBanque,
+            remboursement.montantAPayer,
+            remboursement.numeroCompte,
+            remboursement.numeroPret
+        );
 
 
         return {

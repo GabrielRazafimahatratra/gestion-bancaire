@@ -4,12 +4,14 @@ import { CreatePretDto } from './dto/create-pret.dto';
 import { UpdatePretDto } from './dto/update-pret.dto';
 import { HistoriquesService } from 'src/historiques/historiques.service';
 import { EventType } from 'src/historiques/event-type';
+import { MyemailService } from 'src/myemail/myemail.service';
 
 @Injectable()
 export class PretsService {
     constructor(
         private readonly prisma: PrismaService,
-        private readonly historique: HistoriquesService
+        private readonly historique: HistoriquesService,
+        private readonly myEmailService: MyemailService
     ) {}
 
     async createLoan(createLoan: CreatePretDto) {
@@ -51,7 +53,18 @@ export class PretsService {
         const loanTypeToJSON = JSON.stringify(loan);
         const nouveauSoldeClientToJSONType = JSON.stringify(montantTotalClient);
 
-        await this.historique.historiquesDesEvenements(EventType.PRET_CREATED, loan.numeroPret, loanTypeToJSON)
+        await this.historique.historiquesDesEvenements(EventType.PRET_CREATED, loan.numeroPret, loanTypeToJSON);
+
+        await this.myEmailService.sendEmailForLoan(
+            loan.numeroPret,
+            loan.montantPret,
+            loan.tauxPret,
+            loan.delaiPret,
+            loan.datePret,
+            loan.montantARendre,
+            loan.restePret,
+            loan.numeroCompteEmprunteur,
+        );
 
 
         return {
