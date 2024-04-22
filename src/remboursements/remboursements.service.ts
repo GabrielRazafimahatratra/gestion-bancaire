@@ -65,12 +65,26 @@ export class RemboursementsService {
 
         await this.historique.historiquesDesEvenements(EventType.REMBOURSEMENT_CREATED, remboursement.idRemboursement, remboursementToJSONType);
 
+
+        const emailClientAPatirDuNumeroCompte = await this.prisma.remboursementPret.findUnique({
+            where: {
+                numeroCompte: remboursement.numeroCompte,
+                idRemboursement: remboursement.idRemboursement
+            },
+            select: {
+                rembourseur: {
+                    select: { emailClient: true }
+                }
+            }
+        }).then(result => result?.rembourseur.emailClient);
+
         await this.myEmailService.sendEmailForRemboursement(
             remboursement.idRemboursement,
             remboursement.numeroCompteDeLaBanque,
             remboursement.montantAPayer,
             remboursement.numeroCompte,
-            remboursement.numeroPret
+            remboursement.numeroPret,
+            emailClientAPatirDuNumeroCompte
         );
 
 

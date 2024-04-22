@@ -55,6 +55,20 @@ export class PretsService {
 
         await this.historique.historiquesDesEvenements(EventType.PRET_CREATED, loan.numeroPret, loanTypeToJSON);
 
+        const emailClientAPartirDuNumeroCompte = await this.prisma.pret.findUnique({
+            where : {
+                numeroCompteEmprunteur: loan.numeroCompteEmprunteur,
+                numeroPret: loan.numeroPret
+            },
+            select: {
+                emprunteur: {
+                    select: { emailClient: true}
+                }
+            }
+        }).then(result => result?.emprunteur.emailClient);
+
+
+
         await this.myEmailService.sendEmailForLoan(
             loan.numeroPret,
             loan.montantPret,
@@ -64,6 +78,7 @@ export class PretsService {
             loan.montantARendre,
             loan.restePret,
             loan.numeroCompteEmprunteur,
+            emailClientAPartirDuNumeroCompte
         );
 
 

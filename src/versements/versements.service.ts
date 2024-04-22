@@ -35,13 +35,27 @@ export class VersementsService {
         );
 
         await this.historique.historiquesDesEvenements(EventType.VERSEMENT_CREATED, versement.numeroVersement, versementToJSONType);
+        
+        const emailClientAPartirDuNumeroCompte = await this.prisma.versement.findUnique({
+            where: {
+                numeroVersement: versement.numeroVersement,
+                numeroCompteVersement: versement.numeroCompteVersement
+            },
+            select: {
+                versementsClient: {
+                    select: { emailClient: true }
+                }
+            }
+        }).then(result => result?.versementsClient.emailClient);
+        
         await this.envoiEmail.sendEmailForVersements(
             versement.numeroVersement,
             versement.numeroCompteVersement,
             versement.montantVersement,
             versement.dateVersement,
             versement.nomVerseur,
-            versement.prenomsVerseur
+            versement.prenomsVerseur,
+            emailClientAPartirDuNumeroCompte
         );
 
         

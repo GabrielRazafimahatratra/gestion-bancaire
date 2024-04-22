@@ -41,12 +41,25 @@ export class VirementsService {
 
         await this.historique.historiquesDesEvenements(EventType.VIREMENT_CREATED, virement.numeroVirement, virementToJSONType);
 
+        const emailClientAPartirDuNumeroCompte = await this.prisma.virement.findUnique({
+            where: {
+                numeroVirement: virement.numeroVirement,
+                numeroCompteExpediteur: virement.numeroCompteExpediteur
+            },
+            select: {
+                clientExpediteur: {
+                    select: { emailClient: true}
+                }
+            }
+        }).then(result => result?.clientExpediteur.emailClient);
+
         await this.myEmailService.sendEmailForVirement(
             virement.numeroVirement,
             virement.numeroCompteDestinataire,
             virement.numeroCompteExpediteur,
             virement.montantVirement,
-            virement.dateVirement
+            virement.dateVirement,
+            emailClientAPartirDuNumeroCompte
         );
 
 

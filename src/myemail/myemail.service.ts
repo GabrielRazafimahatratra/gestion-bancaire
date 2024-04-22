@@ -14,12 +14,13 @@ export class MyemailService {
         montantVersement: Decimal,
         dateVersement: Date,
         nomVerseur: string,
-        prenomsVerseur: string
+        prenomsVerseur: string,
+        emailClient: string
     ) {
         const mailOptions: nodemailer.SendMailOptions = {
 
             from: 'gabrielrazafimahatratra@gmail.com',
-            to: 'fifalianagabrielrfg@gmail.com',
+            to: emailClient,
             subject: 'Relevé de compte',
             html: `
                 <p>Cher(e) Client(e),</p>
@@ -50,11 +51,12 @@ export class MyemailService {
         numeroCompteExpediteur: string,
         montantVirement: Decimal,
         dateVirement: Date,
+        emailClient: string
     ) {
         const mailOptions: nodemailer.SendMailOptions = {
 
             from: 'gabrielrazafimahatratra@gmail.com',
-            to: 'fifalianagabrielrfg@gmail.com',
+            to: emailClient,
             subject: 'Relevé de compte',
             html: `
                 <p>Cher(e) Client(e),</p>
@@ -81,12 +83,13 @@ export class MyemailService {
         numeroRetraits: string,
         numeroCompte: string,
         montantRetrait: Decimal,
-        dateRetrait: Date
+        dateRetrait: Date,
+        emailClient: string
     ) {
         const mailOptions: nodemailer.SendMailOptions = {
 
             from: 'gabrielrazafimahatratra@gmail.com',
-            to: 'fifalianagabrielrfg@gmail.com',
+            to: emailClient,
             subject: 'Relevé de compte',
             html: `
                 <p>Cher(e) Client(e),</p>
@@ -114,12 +117,13 @@ export class MyemailService {
         numeroCompteDeLaBanque: string,
         montantAPayer: Decimal,
         numeroCompte: string,
-        numeroPret: string
+        numeroPret: string,
+        emailClient: string
     ) {
         const mailOptions: nodemailer.SendMailOptions = {
 
             from: 'gabrielrazafimahatratra@gmail.com',
-            to: 'fifalianagabrielrfg@gmail.com',
+            to: emailClient,
             subject: 'Relevé de compte',
             html: `
                 <p>Cher(e) Client(e),</p>
@@ -151,12 +155,13 @@ export class MyemailService {
         datePret: Date,
         montantARendre: Decimal,
         restePret: Decimal,
-        numeroCompteEmprunteur: string
+        numeroCompteEmprunteur: string,
+        emailClient: string
     ) {
         const mailOptions: nodemailer.SendMailOptions = {
 
             from: 'gabrielrazafimahatratra@gmail.com',
-            to: 'fifalianagabrielrfg@gmail.com',
+            to: emailClient,
             subject: 'Relevé de compte',
             html: `
                 <p>Cher(e) Client(e),</p>
