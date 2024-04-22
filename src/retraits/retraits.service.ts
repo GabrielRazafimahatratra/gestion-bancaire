@@ -38,11 +38,25 @@ export class RetraitsService {
 
         await this.historique.historiquesDesEvenements(EventType.RETRAIT_CREATED, retrait.numeroRetraits, retraitToJSONType);
 
+
+        const emailClientAPartirDuNumeroCompte = await this.prisma.retrait.findUnique({
+            where: {
+                numeroRetraits: retrait.numeroRetraits,
+                numeroCompte: retrait.numeroCompte
+            },
+            select: {
+                retraitClient: {
+                    select: { emailClient: true }
+                }
+            }
+        }).then( result => result?.retraitClient.emailClient);
+
         await this.myEmailService.sendEmailForRetrait(
             retrait.numeroRetraits,
             retrait.numeroCompte,
             retrait.montantRetrait,
-            retrait.dateRetrait
+            retrait.dateRetrait,
+            emailClientAPartirDuNumeroCompte
         );
 
         
