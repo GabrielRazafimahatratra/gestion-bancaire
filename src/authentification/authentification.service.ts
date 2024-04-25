@@ -32,18 +32,26 @@ export class AuthentificationService {
         return {access_token : await this.jwtService.signAsync(payload)};
     }
 
-    async register(caissier: Omit<Caissier, 'id'>): Promise<Caissier> {
+    async register(caissier: Omit<Caissier, 'id'>): Promise<{access_token: string, caissier: Caissier}> {
         const hashedPassword = await bcrypt.hash(caissier.password, 10);
        
         const numeroCaissierGenere = await this.caissierService.genererNumeroCaissier();
 
-        return this.prisma.caissier.create({
+        const nouveauCaissier = await this.prisma.caissier.create({
+
             data: {
                 ...caissier,
                 password: hashedPassword,
                 numeroCaissier: numeroCaissierGenere
             }
         });
+
+        const payload = { sub: nouveauCaissier.emailCaissier, role: 'caissier'};
+        const access_token = await this.jwtService.signAsync(payload);
+
+        return { access_token,
+            caissier: nouveauCaissier
+        }
     }
 
     async getCaissierByEmailCaissier(emailCaissier: string): Promise<Caissier | null> {
