@@ -174,4 +174,39 @@ export class VirementsService {
 
         return deletedVirementToJSONType;
     }
+
+    async searchVirementsByClient(searchTerm: string) {
+        const virements = await this.prisma.virement.findMany({
+            where: {
+                OR: [
+                    {
+                        clientExpediteur: {
+                            OR: [
+                                { nomClient: {contains: searchTerm, mode: 'insensitive'}},
+                                { prenomsClient: {contains: searchTerm, mode: 'insensitive'}},
+                                { telephoneClient: {contains: searchTerm, mode: 'insensitive'}},
+                            ]
+                        },
+                        clientDestinataire: {
+                            OR: [
+                                { nomClient: {contains: searchTerm, mode: 'insensitive'}},
+                                { prenomsClient: {contains: searchTerm, mode: 'insensitive'}},
+                                { telephoneClient: {contains: searchTerm, mode: 'insensitive'}},
+                            ]
+                        }
+                    }
+                    
+                ]
+                
+            },
+            include: { 
+                clientDestinataire: true,
+                clientExpediteur: true
+            }
+        });
+
+        const virementsToJSONType = JSON.stringify(virements);
+        return virementsToJSONType;
+    }
+
 }

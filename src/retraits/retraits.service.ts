@@ -151,4 +151,30 @@ export class RetraitsService {
         return deletedRetraitToJSONType;
     }
 
+
+    async searchRetraitsByClient(searchTerm: string) {
+        const retrait = await this.prisma.retrait.findMany({
+            where: {
+                OR: [
+                    {
+                        retraitClient: {
+                            OR: [
+                                { nomClient: {contains: searchTerm, mode: 'insensitive'}},
+                                { prenomsClient: {contains: searchTerm, mode: 'insensitive'}},
+                                { telephoneClient: {contains: searchTerm, mode: 'insensitive'}},
+                            ]
+                        }
+                    }
+                  
+                ]
+                
+            },
+            include: { retraitClient: true }
+        });
+
+        const retraitsToJSONType = JSON.stringify(retrait);
+        return retraitsToJSONType;
+    }
+
+
 }

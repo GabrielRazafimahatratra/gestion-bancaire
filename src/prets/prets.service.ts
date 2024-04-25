@@ -172,4 +172,31 @@ export class PretsService {
         return nombreTotalPretPayeToJSONType;
     }
 
+
+    async searchPretsByClient(searchTerm: string) {
+        const prets = await this.prisma.pret.findMany({
+            where: {
+                OR: [
+                    {
+                        emprunteur: {
+                            OR: [
+                                { nomClient: {contains: searchTerm, mode: 'insensitive'}},
+                                { prenomsClient: {contains: searchTerm, mode: 'insensitive'}},
+                                { telephoneClient: {contains: searchTerm, mode: 'insensitive'}},
+                            ]
+                        }
+                    }
+                  
+                ]
+                
+            },
+            include: { emprunteur: true }
+        });
+
+        const pretsToJSONType = JSON.stringify(prets);
+        return pretsToJSONType;
+    }
+
+
+
 }

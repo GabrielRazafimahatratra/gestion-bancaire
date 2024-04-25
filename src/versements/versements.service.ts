@@ -162,4 +162,30 @@ export class VersementsService {
 
         return versementParMoisToJSONType;
     }
+
+
+    async searchVersementsByClient(searchTerm: string) {
+        const versements = await this.prisma.versement.findMany({
+            where: {
+                OR: [
+                    {
+                        versementsClient: {
+                            OR: [
+                                { nomClient: {contains: searchTerm, mode: 'insensitive'}},
+                                { prenomsClient: {contains: searchTerm, mode: 'insensitive'}},
+                                { telephoneClient: {contains: searchTerm, mode: 'insensitive'}},
+                            ]
+                        }
+                    },
+                    { nomVerseur: {contains: searchTerm, mode: 'insensitive'}},
+                    { prenomsVerseur: {contains: searchTerm, mode: 'insensitive'}}
+                ]
+                
+            },
+            include: { versementsClient: true }
+        });
+
+        const versmentsToJSONType = JSON.stringify(versements);
+        return versmentsToJSONType;
+    }
 }
