@@ -1,4 +1,4 @@
-import { Controller, Delete, Param, Patch, Post, Get, Body } from '@nestjs/common';
+import { Controller, Delete, Param, Patch, Post, Get, Body, Query } from '@nestjs/common';
 import { PretsService } from './prets.service';
 import { CreatePretDto } from './dto/create-pret.dto';
 import { UpdatePretDto } from './dto/update-pret.dto';
@@ -7,6 +7,11 @@ import { UpdatePretDto } from './dto/update-pret.dto';
 export class PretsController {
     constructor(private readonly pretsService: PretsService) {}
 
+
+    @Get('search')
+    async searchPretsByClient(@Query('searchTerm') searchTerm: string) {
+        return this.pretsService.searchPretsByClient(searchTerm);
+    }
 
     @Post()
     createLoan(@Body() createLoan: CreatePretDto) {

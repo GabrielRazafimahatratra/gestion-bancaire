@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { RemboursementsService } from './remboursements.service';
 import { CreateRemboursementsDto } from './dto/create-remboursements.dto';
 import { UpdateRemboursementsDto } from './dto/update-remboursement.dto';
@@ -6,6 +6,12 @@ import { UpdateRemboursementsDto } from './dto/update-remboursement.dto';
 @Controller('remboursements')
 export class RemboursementsController {
     constructor(private readonly remboursementService: RemboursementsService) {}
+
+    @Get('search')
+    async searchRemboursementsByClient(@Query('searchTerm') searchTerm: string) {
+        return this.remboursementService.searchRemboursementsByClient(searchTerm);
+    }
+
 
     @Post()
     async createRemboursement(@Body() createRemboursement: CreateRemboursementsDto){

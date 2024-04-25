@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { VirementsService } from './virements.service';
 import { UpdateVirementsDtos } from './dtos/update-virements.dtos';
 import { CreateVirementsDto } from './dtos/create-virements.dto';
@@ -7,6 +7,12 @@ import { CreateVirementsDto } from './dtos/create-virements.dto';
 export class VirementsController {
 
     constructor( private readonly virementService: VirementsService) {}
+
+    @Get('search')
+    async searchVirementsByClient(@Query('searchTerm') searchTerm: string) {
+        return this.virementService.searchVirementsByClient(searchTerm);
+    }
+
 
     @Post()
     async createVirement(@Body() createVirement: CreateVirementsDto) {

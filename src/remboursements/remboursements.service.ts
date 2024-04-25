@@ -154,4 +154,32 @@ export class RemboursementsService {
 
         return deletedRemboursementToJSONType;
     }
+
+
+    async searchRemboursementsByClient(searchTerm: string) {
+        const remboursements = await this.prisma.remboursementPret.findMany({
+            where: {
+                OR: [
+                    {
+                        rembourseur: {
+                            OR: [
+                                { nomClient: {contains: searchTerm, mode: 'insensitive'}},
+                                { prenomsClient: {contains: searchTerm, mode: 'insensitive'}},
+                                { telephoneClient: {contains: searchTerm, mode: 'insensitive'}},
+                            ]
+                        }
+                    }
+                  
+                ]
+                
+            },
+            include: { rembourseur: true }
+        });
+
+        const remboursementsToJSONType = JSON.stringify(remboursements);
+        return remboursementsToJSONType;
+    }
+
+
+
 }

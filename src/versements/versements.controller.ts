@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { VersementsService } from './versements.service';
 import { CreateVersementsDto } from './dtos/create-versements.dto';
 import { UpdateVersementsDto } from './dtos/update-versements.dto';
@@ -7,6 +7,12 @@ import { UpdateVersementsDto } from './dtos/update-versements.dto';
 export class VersementsController {
 
     constructor( private readonly versementService: VersementsService) {}
+
+    @Get('search')
+    async searchVersementsByClient(@Query('searchTerm') searchTerm: string) {
+        return this.versementService.searchVersementsByClient(searchTerm);
+    }
+
 
     @Post()
     async createVersement(@Body() createVersement: CreateVersementsDto) {

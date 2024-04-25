@@ -91,4 +91,24 @@ export class ClientsService {
     return deletedClientTypeToJSON;
 
   }
+
+  async searchClients(searchTerm: string) {
+    const clients = await this.prisma.client.findMany({
+      where: {
+        OR: [
+          { nomClient: { contains: searchTerm, mode: 'insensitive' } },
+          { prenomsClient: { contains: searchTerm, mode: 'insensitive' } },
+          { numeroCompte: { contains: searchTerm, mode: 'insensitive' } },
+          { telephoneClient: { contains: searchTerm, mode: 'insensitive' } },
+          { emailClient: { contains: searchTerm, mode: 'insensitive' } },
+        ],
+      },
+    });
+    
+    const clientsToJSONType = JSON.stringify(clients);
+
+    return clientsToJSONType;
+  }
+
+
 }
