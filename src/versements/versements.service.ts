@@ -58,10 +58,6 @@ export class VersementsService {
             emailClientAPartirDuNumeroCompte
         );
 
-        
-
-
-
 
         return versementToJSONType;
     }

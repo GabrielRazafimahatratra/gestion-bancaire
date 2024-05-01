@@ -13,6 +13,18 @@ export class PretsController {
         return this.pretsService.searchPretsByClient(searchTerm);
     }
 
+    @Get('nombreTotalPretNonPaye')
+    async nombreTotalPretNonPaye() {
+        return this.pretsService.nombreTotalPretNonPaye();
+    }
+    
+    @Get('nombreTotalPretPaye')
+    async nombreTotalPretPaye() {
+        return this.pretsService.nombreTotalPretPaye();
+    }
+
+
+
     @Post()
     createLoan(@Body() createLoan: CreatePretDto) {
         return this.pretsService.createLoan(createLoan);

@@ -12,6 +12,11 @@ export class VersementsController {
     async searchVersementsByClient(@Query('searchTerm') searchTerm: string) {
         return this.versementService.searchVersementsByClient(searchTerm);
     }
+    
+    @Get('nombreVersementParMois')
+    async nombreVersementParMois() {
+        return this.versementService.nombreVersementParMois();
+    }
 
 
     @Post()
