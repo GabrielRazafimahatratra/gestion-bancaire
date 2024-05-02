@@ -7,7 +7,7 @@ import { UpdateRemboursementsDto } from './dto/update-remboursement.dto';
 export class RemboursementsController {
     constructor(private readonly remboursementService: RemboursementsService) {}
 
-    @Get('search')
+    @Post('search')
     async searchRemboursementsByClient(@Query('searchTerm') searchTerm: string) {
         return this.remboursementService.searchRemboursementsByClient(searchTerm);
     }

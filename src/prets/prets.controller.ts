@@ -8,7 +8,7 @@ export class PretsController {
     constructor(private readonly pretsService: PretsService) {}
 
 
-    @Get('search')
+    @Post('search')
     async searchPretsByClient(@Query('searchTerm') searchTerm: string) {
         return this.pretsService.searchPretsByClient(searchTerm);
     }

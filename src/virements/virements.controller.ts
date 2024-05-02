@@ -8,7 +8,7 @@ export class VirementsController {
 
     constructor( private readonly virementService: VirementsService) {}
 
-    @Get('search')
+    @Post('search')
     async searchVirementsByClient(@Query('searchTerm') searchTerm: string) {
         return this.virementService.searchVirementsByClient(searchTerm);
     }
