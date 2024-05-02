@@ -8,10 +8,22 @@ export class PretsController {
     constructor(private readonly pretsService: PretsService) {}
 
 
-    @Get('search')
+    @Post('search')
     async searchPretsByClient(@Query('searchTerm') searchTerm: string) {
         return this.pretsService.searchPretsByClient(searchTerm);
     }
+
+    @Get('nombreTotalPretNonPaye')
+    async nombreTotalPretNonPaye() {
+        return this.pretsService.nombreTotalPretNonPaye();
+    }
+    
+    @Get('nombreTotalPretPaye')
+    async nombreTotalPretPaye() {
+        return this.pretsService.nombreTotalPretPaye();
+    }
+
+
 
     @Post()
     createLoan(@Body() createLoan: CreatePretDto) {

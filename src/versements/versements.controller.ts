@@ -8,9 +8,14 @@ export class VersementsController {
 
     constructor( private readonly versementService: VersementsService) {}
 
-    @Get('search')
+    @Post('search')
     async searchVersementsByClient(@Query('searchTerm') searchTerm: string) {
         return this.versementService.searchVersementsByClient(searchTerm);
+    }
+    
+    @Get('nombreVersementParMois')
+    async nombreVersementParMois() {
+        return this.versementService.nombreVersementParMois();
     }
 
 

@@ -7,7 +7,7 @@ import { UpdateRetraitsDto } from './dtos/update-retraits.dto';
 export class RetraitsController {
     constructor( private readonly retraitsService: RetraitsService) {}
 
-    @Get('search')
+    @Post('search')
     async searchRetraitsByClient(@Query('searchTerm') searchTerm: string) {
         return this.retraitsService.searchRetraitsByClient(searchTerm);
     }
