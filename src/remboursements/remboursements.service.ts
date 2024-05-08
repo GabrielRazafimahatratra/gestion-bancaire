@@ -22,11 +22,11 @@ export class RemboursementsService {
         const remboursement = await this.prisma.remboursementPret.create({
             data: {
                 ...createRemboursement,
-                idRemboursement: idRemboursementGenere
+                idRemboursement: idRemboursementGenere,
             }
         });
 
-        const numeroPretAPartirRemboursement = createRemboursement.numeroPret;
+        const numeroPretAPartirRemboursement = createRemboursement.numeroPretPourLeRemboursement;
         const montantPret = await this.prisma.pret.findUnique({
             where: {numeroPret: numeroPretAPartirRemboursement},
             select: {montantARendre: true}
@@ -68,7 +68,7 @@ export class RemboursementsService {
 
         const emailClientAPatirDuNumeroCompte = await this.prisma.remboursementPret.findUnique({
             where: {
-                numeroCompte: remboursement.numeroCompte,
+                numeroCompteVerseur: remboursement.numeroCompteVerseur,
                 idRemboursement: remboursement.idRemboursement
             },
             select: {
@@ -82,8 +82,8 @@ export class RemboursementsService {
             remboursement.idRemboursement,
             remboursement.numeroCompteDeLaBanque,
             remboursement.montantAPayer,
-            remboursement.numeroCompte,
-            remboursement.numeroPret,
+            remboursement.numeroCompteVerseur,
+            remboursement.numeroPretPourLeRemboursement,
             emailClientAPatirDuNumeroCompte
         );
 
