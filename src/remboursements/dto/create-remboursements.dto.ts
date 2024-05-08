@@ -13,9 +13,9 @@ export class CreateRemboursementsDto {
 
     @IsString()
     @IsNotEmpty()
-    numeroCompte: string
+    numeroCompteVerseur: string
 
     @IsString()
     @IsNotEmpty()
-    numeroPret: string
+    numeroPretPourLeRemboursement: string
 }

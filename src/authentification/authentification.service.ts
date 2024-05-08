@@ -23,7 +23,7 @@ export class AuthentificationService {
         });
 
         if (!caissier || !(await bcrypt.compare(password, caissier.password))) {
-            throw new Error('Identifiants incorrects');
+            return{access_token:"No"};
         }
 
         const payload = { sub: caissier.emailCaissier, role: 'caissier'}

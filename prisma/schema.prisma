@@ -64,18 +64,19 @@ model Banque {
 
 
 model RemboursementPret {
-  idRemboursement           String  @id
-  numeroCompteDeLaBanque    String
-  montantAPayer             Decimal
+  idRemboursement                     String  @id
+  montantAPayer                       Decimal
 
 
-  remboursementPret         Banque  @relation(fields: [numeroCompteDeLaBanque], references: [numeroCompteBanque])
 
-  rembourseur               Client  @relation(fields: [numeroCompte], references: [numeroCompte])
-  numeroCompte              String
+  rembourseur                         Client  @relation(fields: [numeroCompteVerseur], references: [numeroCompte])
+  numeroCompteVerseur                 String
 
-  rembourserPret            Pret    @relation(fields: [numeroPret], references: [numeroPret])
-  numeroPret                String
+  rembourserPret                      Pret    @relation(fields: [numeroPretPourLeRemboursement], references: [numeroPret])
+  numeroPretPourLeRemboursement       String
+  
+  remboursementPret                   Banque  @relation(fields: [numeroCompteDeLaBanque], references: [numeroCompteBanque])
+  numeroCompteDeLaBanque              String
 }
 
 

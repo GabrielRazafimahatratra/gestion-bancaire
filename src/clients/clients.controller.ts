@@ -9,7 +9,7 @@ export class ClientsController {
 
 
   
-  @Get('search')
+  @Post('search')
   async searchClient(@Query('searchTerm') searchTerm: string) {
       return this.clientsService.searchClients(searchTerm);
   }
