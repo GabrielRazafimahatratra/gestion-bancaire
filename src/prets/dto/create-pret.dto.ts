@@ -1,10 +1,11 @@
 import { Decimal } from "@prisma/client/runtime/library"
-import { IsNotEmpty, IsNumber, IsString } from "class-validator"
+import { IsNotEmpty, IsNumber, IsPositive, IsString, Min } from "class-validator"
 
 export class CreatePretDto{
    
     @IsString()
     @IsNotEmpty()
+    @IsPositive()
     montantPret:Decimal;
 
     @IsString()

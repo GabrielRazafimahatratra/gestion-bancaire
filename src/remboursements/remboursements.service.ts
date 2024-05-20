@@ -29,10 +29,10 @@ export class RemboursementsService {
         const numeroPretAPartirRemboursement = createRemboursement.numeroPretPourLeRemboursement;
         const montantPret = await this.prisma.pret.findUnique({
             where: {numeroPret: numeroPretAPartirRemboursement},
-            select: {montantARendre: true}
+            select: {restePret: true}
         });
 
-        const valeurPret = parseFloat(montantPret.montantARendre.toString());
+        const valeurPret = parseFloat(montantPret.restePret.toString());
         const montantAPayer = parseFloat(remboursement.montantAPayer.toString());
         const montantReste = valeurPret - montantAPayer;
 
