@@ -7,7 +7,7 @@ const pretsData = [
     
     
       {
-        numeroPret: "Pret006",
+        numeroPret: "Pret001",
         montantPret: 250000,
         tauxPret: 1.7,
         delaiPret: 8,
@@ -17,7 +17,7 @@ const pretsData = [
         numeroCompteEmprunteur: "00086-0000000005-81"
       },
       {
-        numeroPret: "Pret007",
+        numeroPret: "Pret002",
         montantPret: 900000,
         tauxPret: 2.2,
         delaiPret: 14,
@@ -27,7 +27,7 @@ const pretsData = [
         numeroCompteEmprunteur: "00086-0000000006-81"
       },
       {
-        numeroPret: "Pret008",
+        numeroPret: "Pret003",
         montantPret: 655000,
         tauxPret: 1.9,
         delaiPret: 13,
@@ -37,7 +37,7 @@ const pretsData = [
         numeroCompteEmprunteur: "00086-0000000007-81"
       },
       {
-        numeroPret: "Pret009",
+        numeroPret: "Pret004",
         montantPret: 1800000,
         tauxPret: 2.1,
         delaiPret: 20,
@@ -47,24 +47,24 @@ const pretsData = [
         numeroCompteEmprunteur: "00086-0000000008-81"
       },
       {
-        numeroPret: "Pret010",
+        numeroPret: "Pret005",
         montantPret: 110000,
         tauxPret: 1.5,
         delaiPret: 6,
         datePret: new Date("2024-01-18T00:00:00.000Z"),
         montantARendre: 165000,
         restePret: 117150,
-        numeroCompteEmprunteur: "00086-000000009-81"
+        numeroCompteEmprunteur: "00086-0000000009-81"
       },
       {
-        numeroPret: "Pret011",
+        numeroPret: "Pret006",
         montantPret: 850000,
         tauxPret: 1.8,
         delaiPret: 5,
         datePret: new Date("2024-03-12T00:00:00.000Z"),
         montantARendre: 1530000,
         restePret: 489420,
-        numeroCompteEmprunteur: "00086-0000000010-81"
+        numeroCompteEmprunteur: "00086-0000000002-81"
       },
       
 ];
