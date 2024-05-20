@@ -1,5 +1,5 @@
 import { Decimal } from "@prisma/client/runtime/library";
-import { IsNotEmpty, IsNumber, IsString } from "class-validator"
+import { IsNotEmpty, IsNumber, IsPositive, IsString } from "class-validator"
 
 export class CreateVersementsDto {
   
@@ -10,6 +10,7 @@ export class CreateVersementsDto {
     
     @IsNumber()
     @IsNotEmpty()
+    @IsPositive()
     montantVersement: Decimal;
     
     @IsString()

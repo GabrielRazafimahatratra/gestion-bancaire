@@ -1,5 +1,5 @@
 import { Decimal } from "@prisma/client/runtime/library";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsPositive, IsString } from "class-validator";
 
 export class CreateRetraitsDto {
     
@@ -9,6 +9,7 @@ export class CreateRetraitsDto {
     
     @IsString()
     @IsNotEmpty()
+    @IsPositive()
     montantRetrait: Decimal;
     
 }

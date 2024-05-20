@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from "class-validator";
+import { IsNumber, IsString, Min } from "class-validator";
 
 export class CreateClientDto {
     @IsString()
@@ -20,6 +20,7 @@ export class CreateClientDto {
     telephoneClient: string;
     
     @IsNumber()
+    @Min(0)
     montantClient: number;
 
 }

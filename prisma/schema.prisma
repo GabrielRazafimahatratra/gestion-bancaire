@@ -14,7 +14,7 @@ model Client {
   addresseClient                String
   emailClient                   String                @unique
   telephoneClient               String
-  montantClient                 Float
+  montantClient                 Float                 
 
   prets                         Pret[]
   remboursements                RemboursementPret[]
