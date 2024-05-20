@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 const clientsData = [
 
     {
-        numeroCompte: "00086-0000000004-81",
+        numeroCompte: "00086-0000000001-81",
         nomClient: "Randriamanantena",
         prenomsClient: "Harivola",
         addresseClient: "Analakely",
@@ -15,7 +15,7 @@ const clientsData = [
         montantClient: 4800000
     },
     {
-        numeroCompte: "00086-0000000005-81",
+        numeroCompte: "00086-0000000002-81",
         nomClient: "Rasoamanarivo",
         prenomsClient: "Joséphine",
         addresseClient: "Ambohidratrimo",
@@ -24,7 +24,7 @@ const clientsData = [
         montantClient: 6200000
     },
     {
-        numeroCompte: "00086-0000000006-81",
+        numeroCompte: "00086-0000000003-81",
         nomClient: "Rafalimanana",
         prenomsClient: "Justin",
         addresseClient: "Ivandry",
@@ -33,7 +33,7 @@ const clientsData = [
         montantClient: 7100000
     },
     {
-        numeroCompte: "00086-0000000007-81",
+        numeroCompte: "00086-0000000004-81",
         nomClient: "Rasoaharisoa",
         prenomsClient: "Aina",
         addresseClient: "Ambohipo",
@@ -42,7 +42,7 @@ const clientsData = [
         montantClient: 3900000
     },
     {
-        numeroCompte: "00086-0000000008-81",
+        numeroCompte: "00086-0000000005-81",
         nomClient: "Andriamahazo",
         prenomsClient: "Tianarivelo",
         addresseClient: "Amboditsiry",
@@ -51,7 +51,7 @@ const clientsData = [
         montantClient: 5700000
     },
     {
-        numeroCompte: "00086-0000000009-81",
+        numeroCompte: "00086-0000000006-81",
         nomClient: "Razafimandimby",
         prenomsClient: "Rivo",
         addresseClient: "Ankatso",
@@ -60,7 +60,7 @@ const clientsData = [
         montantClient: 4200000
     },
     {
-        numeroCompte: "00086-0000000010-81",
+        numeroCompte: "00086-0000000007-81",
         nomClient: "Rasoamanana",
         prenomsClient: "Fitia",
         addresseClient: "Isotry",
@@ -69,7 +69,7 @@ const clientsData = [
         montantClient: 6800000
     },
     {
-        numeroCompte: "00086-0000000011-81",
+        numeroCompte: "00086-0000000008-81",
         nomClient: "Rabenjanahary",
         prenomsClient: "Faniry",
         addresseClient: "Ankadifotsy",
@@ -78,7 +78,7 @@ const clientsData = [
         montantClient: 5100000
     },
     {
-        numeroCompte: "00086-0000000012-81",
+        numeroCompte: "00086-0000000009-81",
         nomClient: "Ramaroson",
         prenomsClient: "Tahiry",
         addresseClient: "Andoharanofotsy",
