@@ -6,7 +6,6 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { HistoriquesService } from 'src/historiques/historiques.service';
 import { EventType } from 'src/historiques/event-type';
 import { MyemailService } from 'src/myemail/myemail.service';
-import { error } from 'console';
 
 @Injectable()
 export class RetraitsService {
@@ -26,60 +25,63 @@ export class RetraitsService {
         });
 
         if (!client) { throw new Error("Client non trouvé"); }
-
-        const montantClient = parseFloat(client.montantClient.toString())
-        const montantRetrait = parseFloat(createRetrait.montantRetrait.toString())
-
-        if (montantRetrait < montantClient) {
-
-            const numeroRetraitGenere = await this.genererNumeroRetrait();
-    
-            const retrait = await this.prisma.retrait.create({
-                data: {
-                    ...createRetrait,
-                    numeroRetraits: numeroRetraitGenere
-                }
-            });
-            
-            const retraitToJSONType = JSON.stringify(retrait);
-            
-            
-            
-            
-            await this.reduireMontantApresRetrait(
-                createRetrait.numeroCompte,
-                createRetrait.montantRetrait
-            );
-            
-            await this.historique.historiquesDesEvenements(EventType.RETRAIT_CREATED, retrait.numeroRetraits, retraitToJSONType);
-            
-            
-            const emailClientAPartirDuNumeroCompte = await this.prisma.retrait.findUnique({
-                where: {
-                    numeroRetraits: retrait.numeroRetraits,
-                    numeroCompte: retrait.numeroCompte
-                },
-                select: {
-                    retraitClient: {
-                        select: { emailClient: true }
-                    }
-                }
-            }).then( result => result?.retraitClient.emailClient);
-            
-            await this.myEmailService.sendEmailForRetrait(
-                retrait.numeroRetraits,
-                retrait.numeroCompte,
-                retrait.montantRetrait,
-                retrait.dateRetrait,
-                emailClientAPartirDuNumeroCompte
-            );
-            
-            
-            return retraitToJSONType;
-        }
         else {
-            return JSON.stringify("Solde insuffisant pour le retrait");
+            const montantClient = parseFloat(client.montantClient.toString())
+            const montantRetrait = parseFloat(createRetrait.montantRetrait.toString())
+
+            if (montantRetrait < montantClient) {
+
+                const numeroRetraitGenere = await this.genererNumeroRetrait();
+        
+                const retrait = await this.prisma.retrait.create({
+                    data: {
+                        ...createRetrait,
+                        numeroRetraits: numeroRetraitGenere
+                    }
+                });
+                
+                const retraitToJSONType = JSON.stringify(retrait);
+                
+                
+                
+                
+                await this.reduireMontantApresRetrait(
+                    createRetrait.numeroCompte,
+                    createRetrait.montantRetrait
+                );
+                
+                await this.historique.historiquesDesEvenements(EventType.RETRAIT_CREATED, retrait.numeroRetraits, retraitToJSONType);
+                
+                
+                const emailClientAPartirDuNumeroCompte = await this.prisma.retrait.findUnique({
+                    where: {
+                        numeroRetraits: retrait.numeroRetraits,
+                        numeroCompte: retrait.numeroCompte
+                    },
+                    select: {
+                        retraitClient: {
+                            select: { emailClient: true }
+                        }
+                    }
+                }).then( result => result?.retraitClient.emailClient);
+                
+                await this.myEmailService.sendEmailForRetrait(
+                    retrait.numeroRetraits,
+                    retrait.numeroCompte,
+                    retrait.montantRetrait,
+                    retrait.dateRetrait,
+                    emailClientAPartirDuNumeroCompte
+                );
+                
+                
+                return retraitToJSONType;
+            }
+            else {
+                return JSON.stringify("Solde insuffisant pour le retrait");
+            }
         }
+
+        
     }
 
 
