@@ -17,82 +17,106 @@ export class RemboursementsService {
 
     async createRemboursement(createRemboursement: CreateRemboursementsDto) {
 
-        const idRemboursementGenere = await this.genererIdRemboursement();
-
-        const remboursement = await this.prisma.remboursementPret.create({
-            data: {
-                ...createRemboursement,
-                idRemboursement: idRemboursementGenere,
-            }
+        const client = await this.prisma.client.findUnique({
+            where: { numeroCompte: createRemboursement.numeroCompteVerseur },
+            select: { montantClient: true}
         });
 
-        const numeroPretAPartirRemboursement = createRemboursement.numeroPretPourLeRemboursement;
-        const montantPret = await this.prisma.pret.findUnique({
-            where: {numeroPret: numeroPretAPartirRemboursement},
-            select: {restePret: true}
+        const montantPourLeRemboursement = parseFloat(createRemboursement.montantAPayer.toString());
+        
+        const resteDuPretAPayer = await this.prisma.pret.findUnique({
+            where: { numeroPret: createRemboursement.numeroPretPourLeRemboursement},
+            select: { restePret: true }
         });
+        
+        const resteDuPretAPayerConverti = parseFloat(resteDuPretAPayer.toString());
+        
 
-        const valeurPret = parseFloat(montantPret.restePret.toString());
-        const montantAPayer = parseFloat(remboursement.montantAPayer.toString());
-        const montantReste = valeurPret - montantAPayer;
+        if (client) {
+            if( montantPourLeRemboursement <= resteDuPretAPayerConverti) {
+                const idRemboursementGenere = await this.genererIdRemboursement();
 
-       
-        const nouvelleValeurPret = await this.prisma.pret.update({
-            where: {numeroPret: numeroPretAPartirRemboursement},
-            data: {
-                restePret: montantReste
-            }
-        });
+                const remboursement = await this.prisma.remboursementPret.create({
+                    data: {
+                        ...createRemboursement,
+                        idRemboursement: idRemboursementGenere,
+                    }
+                });
 
-        const remboursementToJSONType = JSON.stringify(remboursement);
-        const nouvelleValeurPretToJSONType = JSON.stringify(nouvelleValeurPret)
+                const numeroPretAPartirRemboursement = createRemboursement.numeroPretPourLeRemboursement;
+                const montantPret = await this.prisma.pret.findUnique({
+                    where: {numeroPret: numeroPretAPartirRemboursement},
+                    select: {restePret: true}
+                });
 
-        const ancienSoldeBanque = await this.prisma.banque.findUnique({
-            where: {numeroCompteBanque: remboursement.numeroCompteDeLaBanque}
-        });
+                const valeurPret = parseFloat(montantPret.restePret.toString());
+                const montantAPayer = parseFloat(remboursement.montantAPayer.toString());
+                const montantReste = valeurPret - montantAPayer;
 
-        const ancienSoldeBanqueValeur = parseFloat(ancienSoldeBanque.soldeBanque.toString());
-        const ancienSoldeParRemboursement = parseFloat(ancienSoldeBanque.soldePayeParRemboursements.toString());
+            
+                const nouvelleValeurPret = await this.prisma.pret.update({
+                    where: {numeroPret: numeroPretAPartirRemboursement},
+                    data: {
+                        restePret: montantReste
+                    }
+                });
 
-        const soldeParRemboursement = await this.prisma.banque.update({
-            where: {numeroCompteBanque: remboursement.numeroCompteDeLaBanque },
-            data: {
-                soldeBanque: valeurPret + ancienSoldeBanqueValeur,
-                soldePayeParRemboursements: montantAPayer + ancienSoldeParRemboursement
-            }
-        });
+                const remboursementToJSONType = JSON.stringify(remboursement);
+                const nouvelleValeurPretToJSONType = JSON.stringify(nouvelleValeurPret)
 
+                const ancienSoldeBanque = await this.prisma.banque.findUnique({
+                    where: {numeroCompteBanque: remboursement.numeroCompteDeLaBanque}
+                });
 
-        await this.historique.historiquesDesEvenements(EventType.REMBOURSEMENT_CREATED, remboursement.idRemboursement, remboursementToJSONType);
+                const ancienSoldeBanqueValeur = parseFloat(ancienSoldeBanque.soldeBanque.toString());
+                const ancienSoldeParRemboursement = parseFloat(ancienSoldeBanque.soldePayeParRemboursements.toString());
 
-
-        const emailClientAPatirDuNumeroCompte = await this.prisma.remboursementPret.findUnique({
-            where: {
-                numeroCompteVerseur: remboursement.numeroCompteVerseur,
-                idRemboursement: remboursement.idRemboursement
-            },
-            select: {
-                rembourseur: {
-                    select: { emailClient: true }
-                }
-            }
-        }).then(result => result?.rembourseur.emailClient);
-
-        await this.myEmailService.sendEmailForRemboursement(
-            remboursement.idRemboursement,
-            remboursement.numeroCompteDeLaBanque,
-            remboursement.montantAPayer,
-            remboursement.numeroCompteVerseur,
-            remboursement.numeroPretPourLeRemboursement,
-            emailClientAPatirDuNumeroCompte
-        );
+                const soldeParRemboursement = await this.prisma.banque.update({
+                    where: {numeroCompteBanque: remboursement.numeroCompteDeLaBanque },
+                    data: {
+                        soldeBanque: valeurPret + ancienSoldeBanqueValeur,
+                        soldePayeParRemboursements: montantAPayer + ancienSoldeParRemboursement
+                    }
+                });
 
 
-        return {
-            remboursementToJSONType,
-            nouvelleValeurPretToJSONType,
-            soldeParRemboursement
-        };
+                await this.historique.historiquesDesEvenements(EventType.REMBOURSEMENT_CREATED, remboursement.idRemboursement, remboursementToJSONType);
+
+
+                const emailClientAPatirDuNumeroCompte = await this.prisma.remboursementPret.findUnique({
+                    where: {
+                        numeroCompteVerseur: remboursement.numeroCompteVerseur,
+                        idRemboursement: remboursement.idRemboursement
+                    },
+                    select: {
+                        rembourseur: {
+                            select: { emailClient: true }
+                        }
+                    }
+                }).then(result => result?.rembourseur.emailClient);
+
+                await this.myEmailService.sendEmailForRemboursement(
+                    remboursement.idRemboursement,
+                    remboursement.numeroCompteDeLaBanque,
+                    remboursement.montantAPayer,
+                    remboursement.numeroCompteVerseur,
+                    remboursement.numeroPretPourLeRemboursement,
+                    emailClientAPatirDuNumeroCompte
+                );
+
+
+                return {
+                    remboursementToJSONType,
+                    nouvelleValeurPretToJSONType,
+                    soldeParRemboursement
+                };
+            }else { return "Le montant de votre remboursemenet doit être inférieur ou égale au montant reste de votre prêt"; }
+
+        }else{
+            return "Client non trouvé";
+        }
+
+        
     }
 
     private async genererIdRemboursement(): Promise<string> {
