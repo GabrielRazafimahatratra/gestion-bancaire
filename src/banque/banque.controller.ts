@@ -10,7 +10,7 @@ export class BanqueController {
 
     @Post()
     async createBank(@Body() createBank: CreateBanqueDto) {
-        return this.bankService.createBank(createBank);
+        return this.bankService.createBank(createBank)
     }
 
     @Get()
