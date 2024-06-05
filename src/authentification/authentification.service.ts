@@ -16,20 +16,26 @@ export class AuthentificationService {
 
   
 
-    async login(emailCaissier: string, password: string): Promise<{access_token : string}> {
+    async login(emailCaissier: string, password: string): Promise<{access_token : string, cashier: Caissier }> {
 
         const caissier = await this.prisma.caissier.findUnique({
             where: {emailCaissier}
         });
 
         if (!caissier || !(await bcrypt.compare(password, caissier.password))) {
-            return{access_token:"No"};
+            return{
+                access_token:"No",
+                cashier: null
+            };
         }
 
         const payload = { sub: caissier.emailCaissier, role: 'caissier'}
 
 
-        return {access_token : await this.jwtService.signAsync(payload)};
+        return {
+            access_token : await this.jwtService.signAsync(payload),
+            cashier: caissier
+        };
     }
 
     async register(caissier: Omit<Caissier, 'id'>): Promise<{access_token: string, caissier: Caissier}> {
