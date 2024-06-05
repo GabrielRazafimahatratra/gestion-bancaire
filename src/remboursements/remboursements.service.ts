@@ -29,7 +29,7 @@ export class RemboursementsService {
             select: { restePret: true }
         });
         
-        const resteDuPretAPayerConverti = parseFloat(resteDuPretAPayer.toString());
+        const resteDuPretAPayerConverti = parseFloat(resteDuPretAPayer.restePret.toString());
         
 
         if (client) {
