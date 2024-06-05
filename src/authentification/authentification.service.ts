@@ -16,7 +16,7 @@ export class AuthentificationService {
 
   
 
-    async login(emailCaissier: string, password: string): Promise<{access_token : string, cashier: Caissier }> {
+    async login(emailCaissier: string, password: string): Promise<{access_token : string, cashier: Caissier | null }> {
 
         const caissier = await this.prisma.caissier.findUnique({
             where: {emailCaissier}

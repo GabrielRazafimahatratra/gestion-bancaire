@@ -15,14 +15,14 @@ export class HistoriquesService {
             data: {
                 type,
                 identifiantOfType: idOfType,
-                donnee: JSON.stringify(data),
+                donnee: data,
                 idHistorique : identifiantHistorique
             }
         });
 
-        const historiqueToJSONType = JSON.stringify(historique);
+        // const historiqueToJSONType = JSON.stringify(historique);
 
-        return historiqueToJSONType;
+        return historique;
     }
 
     private async genererIdHistorique(): Promise<string> {
